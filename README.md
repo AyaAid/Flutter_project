@@ -60,7 +60,7 @@ flutter run
 Nous remercions les contributeurs qui ont participé à ce projet :
 
 - [Aya AÏDOUNI](https://github.com/AyaAid)
-- Sasha (https://github.com/contributor2)
+- Sacha (https://github.com/contributor2)
 - Hamza (https://github.com/contributor2)
 - Léo (https://github.com/contributor2)
 - Mattéo (https://github.com/contributor2)
