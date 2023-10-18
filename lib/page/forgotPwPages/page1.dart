@@ -1,3 +1,4 @@
+import 'package:andrestable/page/forgotPwPages/page2.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPwPage extends StatelessWidget {
@@ -28,9 +29,14 @@ class ForgotPwPage extends StatelessWidget {
               const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () {
-                  // ... (Your forgot password logic)
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ForgotPwPage2(),
+                    ),
+                  );
                 },
-                child: const Text('Envoyer'),
+                child: const Text('Suite'),
               ),
             ],
           ),

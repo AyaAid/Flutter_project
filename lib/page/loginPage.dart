@@ -1,5 +1,5 @@
 import 'package:andrestable/main.dart';
-import 'package:andrestable/page/forgotPwPage1.dart';
+import 'package:andrestable/page/forgotPwPages/page1.dart';
 import 'package:andrestable/page/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:andrestable/database/mongodb.dart';
@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ForgotPwPage(),
+                      builder: (context) => ForgotPwPage(),
                     ),
                   );
                 },
