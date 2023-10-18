@@ -33,28 +33,54 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               TextFormField(
-                // ... (Your username TextFormField)
+                decoration: const InputDecoration(labelText: 'Nom d\'utilisateur'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer votre nom d\'utilisateur';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _loginForm.username = value!;
+                },
               ),
               TextFormField(
-                // ... (Your password TextFormField)
+                decoration: const InputDecoration(labelText: 'Mot de passe'),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer votre mot de passe';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _loginForm.password = value!;
+                },
               ),
               const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () async {
-                  // ... (Your login logic)
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    bool idValid = await MongoDataBase().verifyLog(
+                        _loginForm.username, _loginForm.password);
+
+                    if (idValid) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomePage()),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Identifiants incorrects'),
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+                    }
+                  }
                 },
                 child: const Text('Se connecter'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ForgotPwPage(),
-                    ),
-                  );
-                },
-                child: const Text('Mot de passe oublié ?'),
               ),
             ],
           ),
