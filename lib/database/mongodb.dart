@@ -23,4 +23,29 @@ class MongoDataBase {
     });
     return result != null;
   }
+
+  Future<bool> verifyPw(String username, String email) async {
+    if (_db == null || _collection == null) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+
+    var result = await _collection.find({
+      'username': username,
+      'email': email,
+    });
+    return result != null;
+  }
+  Future<bool> changePw(String username, String email, String password) async {
+    if (_db == null || _collection == null) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+
+    var result = await _collection.update(
+      where.eq('username', username).eq('email', email),
+      modify.set('password', password),
+    );
+
+    return result != null;
+  }
+
 }

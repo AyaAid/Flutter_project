@@ -1,7 +1,10 @@
 import 'package:andrestable/main.dart';
+import 'package:andrestable/page/forgotPwPage.dart';
 import 'package:andrestable/page/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:andrestable/database/mongodb.dart';
+
+import 'forgotPwPage.dart';
 
 class LoginFormModel {
   String username = '';
@@ -80,6 +83,17 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 child: const Text('Se connecter'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ForgotPwPage(),
+                    ),
+                  );
+                },
+                child: const Text('Mot de passe oublié ?'),
               ),
             ],
           ),
