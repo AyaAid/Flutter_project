@@ -1,7 +1,6 @@
-import 'package:andrestable/inscription.dart';
 import 'package:flutter/material.dart';
-
 import 'database/mongodb.dart';
+import 'package:andrestable/page//loginPage.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,10 +15,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pinkAccent),
         useMaterial3: true,
       ),
-      home:  NewAccount(),
+      home: LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }

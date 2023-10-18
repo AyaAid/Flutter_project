@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AccountFormModel {
-  String name = '';
-  String firstname = '';
-  String phone = '';
+  String username = '';
   String email = '';
   String password = '';
+  String photo = '';
 }
 
 class NewAccount extends StatefulWidget {
@@ -34,38 +33,17 @@ class _CreateAccount extends State<NewAccount> {
               TextFormField(
                 decoration: const InputDecoration(
                   icon: Icon(Icons.person),
-                  hintText: 'Entrez votre nom',
-                  labelText: 'Nom',
+                  hintText: 'Entrez votre username',
+                  labelText: 'Username',
                 ),
                 validator: (value){
                   if (value == null || value.isEmpty){
-                    return 'Entrez votre nom';
+                    return 'Entrez votre username';
                   }
                   return null;
                 },
                 onSaved: (value) {
-                  _accountForm.name = value!;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.person),
-                  hintText: 'Entrez votre prénom',
-                  labelText: 'Prénom',
-                ),
-                onSaved: (String? value) {
-
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.phone),
-                  hintText: 'Entrez votre téléphone',
-                  labelText: 'Téléphone',
-                ),
-                onSaved: (String? value) {
-                  // This optional block of code can be used to run
-                  // code when the user saves the form.
+                  _accountForm.username = value!;
                 },
               ),
               TextFormField(
@@ -90,6 +68,7 @@ class _CreateAccount extends State<NewAccount> {
                   // code when the user saves the form.
                 },
               ),
+
               Padding(padding: EdgeInsets.all(20)),
               ElevatedButton(
                   style: ButtonStyle(
