@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:andrestable/page/contest.dart';
 import 'package:andrestable/page/horseFormPage.dart';
+import 'package:andrestable/page/planningPage.dart';
 import 'package:andrestable/page/soireeCreatePage.dart';
 import 'package:andrestable/page/soireePage.dart';
 import 'package:andrestable/page/lessonsFormPage.dart';
@@ -82,6 +83,16 @@ class _HomePageState extends State<HomePage> {
                         builder: (context) => const ContestFormPage()),);
                 },
                 child: const Text('Ajouter une compétition'),
+              ),
+
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PlanningPage()),);
+                },
+                child: const Text('Vérifier votre emploi du temps'),
               ),
 
 

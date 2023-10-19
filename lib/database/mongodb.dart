@@ -7,8 +7,8 @@ class MongoDataBase {
   static late DbCollection _collection;
 
   static connect() async{
-      _db = await Db.create(MONGO_URL);
-      await _db.open();
+    _db = await Db.create(MONGO_URL);
+    await _db.open();
 
 
   }
@@ -58,6 +58,7 @@ class MongoDataBase {
     });
     return result != null;
   }
+
   Future<bool> changePw(String username, String email, String password, String collection) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
@@ -68,6 +69,19 @@ class MongoDataBase {
       modify.set('password', password),
     );
 
+    return result != null;
+  }
+
+  Future<bool> getEvent(DateTime date, String username, String collection) async {
+    if (_db == null ) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection(collection);
+
+    var result = await _collection.find({
+      'date': date,
+      'username': username,
+    });
     return result != null;
   }
 
@@ -93,6 +107,3 @@ class SessionManager {
   }
 
 }
-
-
-
