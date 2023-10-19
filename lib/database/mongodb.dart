@@ -51,7 +51,7 @@ class MongoDataBase {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
     }
     _collection = _db.collection(collection);
-    var result = await _collection.find().toList();
+    var result = await _collection.find(where.eq('isVerify', 0)).toList();
     return result;
   }
 

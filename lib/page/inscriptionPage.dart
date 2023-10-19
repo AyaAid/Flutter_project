@@ -34,7 +34,7 @@ class _CreateAccount extends State<NewAccount> {
                 decoration: const InputDecoration(
                   icon: Icon(Icons.person),
                   hintText: 'Entrez votre username',
-                  labelText: 'Username',
+                  labelText: 'username',
                 ),
                 validator: (value){
                   if (value == null || value.isEmpty){
@@ -53,8 +53,6 @@ class _CreateAccount extends State<NewAccount> {
                   labelText: 'Mail',
                 ),
                 onSaved: (String? value) {
-                  // This optional block of code can be used to run
-                  // code when the user saves the form.
                 },
               ),
               TextFormField(
@@ -64,8 +62,6 @@ class _CreateAccount extends State<NewAccount> {
                   labelText: 'Mot de passe',
                 ),
                 onSaved: (String? value) {
-                  // This optional block of code can be used to run
-                  // code when the user saves the form.
                 },
               ),
 

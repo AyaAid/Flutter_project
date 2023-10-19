@@ -15,18 +15,21 @@ class HomePage extends StatefulWidget {
 }
 class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> _lastHorses = [];
+  List<Map<String, dynamic>> _parties = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchRecentHorses();
+    _fetch();
   }
 
-  Future<void> _fetchRecentHorses() async {
+  Future<void> _fetch() async {
     List<Map<String, dynamic>> recentHorses = await MongoDataBase().getLast("horses");
+    List<Map<String, dynamic>> parties = await MongoDataBase().get("partys");
 
     setState(() {
       _lastHorses = recentHorses;
+      _parties = parties;
     });
   }
 
@@ -75,6 +78,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 20.0),
               Expanded(
                 child: ListView.builder(
+
                   itemCount: _lastHorses.length,
                   itemBuilder: (context, index) {
                     final horse = _lastHorses[index];
@@ -87,10 +91,30 @@ class _HomePageState extends State<HomePage> {
                       subtitle: Text('Nom du créateur: ${horse['user']}'),
                       leading: imageBytes != null
                           ? Image.memory(imageBytes)
-                          : Icon(Icons.image),
+                          : const Icon(Icons.image),
                     );
                   },
                 )
+              ),
+              Expanded(
+                  child: ListView.builder(
+
+                    itemCount: _parties.length,
+                    itemBuilder: (context, index) {
+                      final party = _parties[index];
+
+                      Uint8List imageBytes = Uint8List.fromList(List<int>.from(party['image']));
+
+
+                      return ListTile(
+                        title: Text('${party['theme']}'),
+                        subtitle: Text('${party['datetime']} || ${party['adresse']} || ${party['repas']}'),
+                        leading: imageBytes != null
+                            ? Image.memory(imageBytes)
+                            : const Icon(Icons.image),
+                      );
+                    },
+                  )
               ),
             ],)
       ),

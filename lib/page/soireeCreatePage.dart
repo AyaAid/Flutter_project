@@ -41,7 +41,6 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
         _image = File(pickedFile.path);
         _soireeForm.image = imageBytes;
       });
-      print(_soireeForm.image);
     }
   }
 
@@ -227,9 +226,9 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
                         'adresse': _soireeForm.adresse,
                         'apero': _soireeForm.apero,
                         'repas': _soireeForm.repas,
-                        'isVerify': _soireeForm.isVerify,
+                        'isVerify': isVerify,
                       };
-                      bool isValid = await MongoDataBase().addHorseToDB(party, "partys");
+                      bool isValid = await MongoDataBase().addToDB(party, "partys");
                       if (isValid) {
                         Navigator.push(
                           context,
