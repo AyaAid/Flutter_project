@@ -25,12 +25,24 @@ class MongoDataBase {
     });
     return result != null;
   }
+
+  Future<bool> checkUser(String username, String email, String collection) async {
+    if (_db == null) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection(collection);
+    var result = await _collection.findOne({
+      'username': username,
+      'email': email,
+    });
+    return result != null;
+  }
+
   Future<bool> addUserToDB(Map<String, dynamic> users, String collection) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
     }
     _collection = _db.collection(collection);
-    print(users);
     var result = await _collection.insert(users);
     return result != null;
   }

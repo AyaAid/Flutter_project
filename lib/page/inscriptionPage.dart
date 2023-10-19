@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
-import 'package:andrestable/page/homePage.dart';
-import 'package:bcrypt/bcrypt.dart';
+import 'package:andrestable/page/loginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -139,29 +137,41 @@ class _CreateAccount extends State<NewAccount> {
                       padding: MaterialStatePropertyAll(EdgeInsets.all(10))
                   ),
                   onPressed: () async {
-                    hashedpassword = BCrypt.hashpw(_accountForm.password, BCrypt.gensalt(),
-                    );
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
                       var users = {
-                        'Username': _accountForm.username,
+                        'username': _accountForm.username,
                         'email': _accountForm.email,
-                        'password': hashedpassword,
+                        'password': _accountForm.password,
                         'image': _accountForm.image,
                       };
-                      bool isValid = await MongoDataBase().addUserToDB(users, "users");
-                      if (isValid) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                        );
-                      } else {
+                      bool check = await MongoDataBase().checkUser(
+                          _accountForm.username, _accountForm.email, 'users');
+                      if (check) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Impossible d\'ajouter votre licorne pour le moment, réessayez plus tard'),
+                            content: Text(
+                                'Cet email et/ ou username est déjà utilisé !'),
                             duration: Duration(seconds: 3),
                           ),
                         );
+                      } else {
+                        bool isValid = await MongoDataBase().addUserToDB(
+                            users, "users");
+                        if (isValid) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => LoginPage()),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Impossible d\'ajouter votre licorne pour le moment, réessayez plus tard'),
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        }
                       }
                     }
                   },
