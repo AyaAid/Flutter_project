@@ -30,6 +30,7 @@ class MongoDataBase {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
     }
     _collection = _db.collection(collection);
+    print(users);
     var result = await _collection.insert(users);
     return result != null;
   }
@@ -93,20 +94,17 @@ class MongoDataBase {
     }
     return lastEmail;
   }
-
-  Future<bool> getUsername(Map<String, dynamic> users, String collection) async {
-    if (_db == null) {
+  Future<List<Map<String, dynamic>>> getUsername() async {
+    if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
     }
-    _collection = _db.collection(collection);
-
-    var existingUser = await _collection.findOne({'email': users['email']});
-    if (existingUser != null) {
-      return false;
+    _collection = _db.collection("users");
+    var result = await _collection.find(where.sortBy('username', descending: true).limit(10));
+    List<Map<String, dynamic>> lastHorses = [];
+    await for (var horse in result) {
+      lastHorses.add(Map<String, dynamic>.from(horse));
     }
-
-    var result = await _collection.insert(users);
-    return result != null;
+    return lastHorses;
   }
 
 
