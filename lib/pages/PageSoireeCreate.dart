@@ -1,12 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import '../database/mongodb.dart';
-import '../database/constant.dart';
 import 'PageSoireeVerify.dart';
 
 class SoireeCreateFormModel {
@@ -76,8 +74,8 @@ class _PageSoireeCreateState extends State<PageSoireeCreate> {
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center, // Centre les éléments verticalement
-              crossAxisAlignment: CrossAxisAlignment.center, // Centre les éléments horizontalement
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 GestureDetector(
                   onTap: _getImage,
@@ -93,20 +91,36 @@ class _PageSoireeCreateState extends State<PageSoireeCreate> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _dateController,
-                  decoration: const InputDecoration(labelText: 'Date de naissance'),
+                  decoration: const InputDecoration(labelText: 'Date et Heure'),
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
                       context: context,
                       initialDate: _soireeForm.datetime ?? DateTime.now(),
                       firstDate: DateTime(1900),
-                      lastDate: DateTime.now(),
+                      lastDate: DateTime(2100),
                     );
 
-                    if (pickedDate != null && pickedDate != _soireeForm.datetime) {
-                      setState(() {
-                        _soireeForm.datetime = pickedDate;
-                        _dateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                      });
+                    if (pickedDate != null) {
+                      TimeOfDay? pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+
+                      if (pickedTime != null) {
+                        // Combine la date sélectionnée et l'heure sélectionnée
+                        DateTime selectedDateTime = DateTime(
+                          pickedDate.year,
+                          pickedDate.month,
+                          pickedDate.day,
+                          pickedTime.hour,
+                          pickedTime.minute,
+                        );
+
+                        setState(() {
+                          _soireeForm.datetime = selectedDateTime;
+                          _dateController.text = "${selectedDateTime.day}/${selectedDateTime.month}/${selectedDateTime.year} ${pickedTime.format(context)}";
+                        });
+                      }
                     }
                   },
                   readOnly: true,
@@ -206,7 +220,7 @@ class _PageSoireeCreateState extends State<PageSoireeCreate> {
                         isVerify = 1;
                       }
                       var party = {
-                        'image': Uint8List.fromList(_soireeForm.image as List<int>),
+                        'image': _soireeForm.image != null ? Uint8List.fromList(_soireeForm.image!) : Uint8List(0),
                         'theme': _soireeForm.theme,
                         'datetime': _soireeForm.datetime,
                         'adresse': _soireeForm.adresse,
