@@ -8,12 +8,12 @@ import 'pages/PageSoireeValidate.dart';
 
 void main() async {
 
-  // await MongoDataBase.connect();
+  await MongoDataBase.connect();
 
   runApp(MaterialApp(
     home: PageSoireeCreate(),
     theme: ThemeData(
-      primarySwatch: Colors.green,
+      primarySwatch: Colors.pink,
     ),
   ));
 }
