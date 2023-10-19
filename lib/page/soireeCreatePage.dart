@@ -18,12 +18,12 @@ class SoireeCreateFormModel {
   bool? isVerify;
 }
 
-class soireeCreatePage extends StatefulWidget {
+class SoireeCreatePage extends StatefulWidget {
   @override
   _PageSoireeCreateState createState() => _PageSoireeCreateState();
 }
 
-class _PageSoireeCreateState extends State<soireeCreatePage> {
+class _PageSoireeCreateState extends State<SoireeCreatePage> {
   final _formKey = GlobalKey<FormState>();
   final _soireeForm = SoireeCreateFormModel();
 
