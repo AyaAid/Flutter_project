@@ -69,6 +69,19 @@ class MongoDataBase {
     return last;
   }
 
+  Future<List<Map<String, dynamic>>> getHorsesWithDP() async {
+    if (_db == null ) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection("horses");
+    var result = await _collection.find(where.eq('isDP', 1));
+    List<Map<String, dynamic>> last = [];
+    await for (var data in result) {
+      last.add(Map<String, dynamic>.from(data));
+    }
+    return last;
+  }
+
   Future<List<Map<String, dynamic>>> get(String collection) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');

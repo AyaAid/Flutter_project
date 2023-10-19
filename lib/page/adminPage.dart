@@ -12,6 +12,8 @@ class _AdminPageState extends State<AdminPage> {
   List<Map<String, dynamic>> _unverifiedParties = [];
   List<Map<String, dynamic>> _unverifiedCompetitions = [];
   List<Map<String, dynamic>> _unverifiedLessons = [];
+  List<Map<String, dynamic>> _recentUsers = [];
+  List<Map<String, dynamic>> _horsesWithDP = [];
   String? loggedInUsername = SessionManager().getLoggedInUser();
 
   @override
@@ -27,25 +29,33 @@ class _AdminPageState extends State<AdminPage> {
     await MongoDataBase().getAdmin('contest');
     List<Map<String, dynamic>> unverifiedLessons =
     await MongoDataBase().getAdmin('lessons');
+    List<Map<String, dynamic>> recentUsers =
+    await MongoDataBase().getLast("users");
+    List<Map<String, dynamic>> horsesWithDP =
+    await MongoDataBase().getHorsesWithDP();
     setState(() {
       _unverifiedParties = unverifiedParties;
       _unverifiedCompetitions = unverifiedCompetitions;
       _unverifiedLessons = unverifiedLessons;
+      _recentUsers = recentUsers;
+      _horsesWithDP = horsesWithDP;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3, // Trois onglets pour les trois catégories d'événements
+      length: 5, // Cinq onglets pour les cinq catégories
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Admin Page'),
-          bottom: TabBar(
+          title: const Text('Accès Admin'),
+          bottom: const TabBar(
             tabs: [
               Tab(text: 'Soirées'),
               Tab(text: 'Compétitions'),
               Tab(text: 'Cours'),
+              Tab(text: 'Cavaliers'),
+              Tab(text: 'Licornes'),
             ],
           ),
         ),
@@ -70,6 +80,20 @@ class _AdminPageState extends State<AdminPage> {
               itemList: _unverifiedLessons,
               itemBuilder: (item) {
                 return _buildEventItem(item, 'lessons');
+              },
+            ),
+            _buildCategoryCard(
+              categoryTitle: 'Cavalier récents',
+              itemList: _recentUsers,
+              itemBuilder: (item) {
+                return _buildUserItem(item);
+              },
+            ),
+            _buildCategoryCard(
+              categoryTitle: 'Licornes de l\'écurie',
+              itemList: _horsesWithDP,
+              itemBuilder: (item) {
+                return _buildHorseItem(item);
               },
             ),
           ],
@@ -122,18 +146,42 @@ class _AdminPageState extends State<AdminPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            icon: Icon(Icons.check, color: Colors.green),
+            icon: const Icon(Icons.check, color: Colors.green),
             onPressed: () {
               _acceptEvent(eventId, collection);
             },
           ),
           IconButton(
-            icon: Icon(Icons.close, color: Colors.red),
+            icon: const Icon(Icons.close, color: Colors.red),
             onPressed: () {
               _removeEvent(eventId, collection);
             },
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildUserItem(dynamic item) {
+    final user = item as Map<String, dynamic>;
+    final username = user['username'];
+
+    return ListTile(
+      title: Text('Cavalier: $username'),
+      subtitle: Text(
+        'Email: ${user['email']}',
+      ),
+    );
+  }
+
+  Widget _buildHorseItem(dynamic item) {
+    final horse = item as Map<String, dynamic>;
+    final horseName = horse['name'];
+
+    return ListTile(
+      title: Text('Licorne: $horseName'),
+      subtitle: Text(
+        'Robe: ${horse['horse_dess']}',
       ),
     );
   }
