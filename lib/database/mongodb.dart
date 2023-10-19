@@ -78,6 +78,66 @@ class MongoDataBase {
     return result;
   }
 
+  Future<List<Map<String, dynamic>>> getAdmin(String collection) async {
+    if (_db == null ) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection(collection);
+    var result = await _collection.find(where.eq('isVerify', 0)).toList();
+    return result;
+  }
+
+  Future<void> addEvent(String eventId, String collection) async {
+    final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
+    if (idMatch != null) {
+      final extractedId = idMatch.group(1);
+      final id = ObjectId.parse(extractedId!);
+
+      final _collection = _db.collection(collection);
+      final result = await _collection.update(
+        where.eq('_id', id),
+        modify.set('isVerify', 1),
+      );
+
+    } else {
+      print('Format d\'ID invalide : $eventId');
+    }
+  }
+
+
+  Future<void> removeEvent(String eventId, String collection) async {
+    final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
+    if (idMatch != null) {
+      final extractedId = idMatch.group(1);
+      final id = ObjectId.parse(extractedId!);
+
+      final _collection = _db.collection(collection);
+      final result = await _collection.remove(
+        where.eq('_id', id),
+      );
+
+    } else {
+      print('Format d\'ID invalide : $eventId');
+    }
+  }
+
+  Future<bool> isVerifyEvent(String eventId, String collection) async {
+    final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
+    if (idMatch != null) {
+      final extractedId = idMatch.group(1);
+      final id = ObjectId.parse(extractedId!);
+
+      final _collection = _db.collection(collection);
+      final result = await _collection.findOne(where.eq('_id', id).eq('isVerify', 0));
+
+      return result != null;
+    } else {
+      print('Format d\'ID invalide : $eventId');
+      return false;
+    }
+  }
+
+
   Future<bool> verifyPw(String username, String email, String collection) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
