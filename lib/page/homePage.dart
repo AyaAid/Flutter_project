@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 import 'package:andrestable/page/contest.dart';
 import 'package:andrestable/page/horseFormPage.dart';
+import 'package:andrestable/page/profileFormPage.dart';
+import 'package:andrestable/page/profilePage.dart';
 import 'package:andrestable/page/soireeCreatePage.dart';
 import 'package:andrestable/page/lessonsFormPage.dart';
 import 'package:flutter/material.dart';
@@ -84,6 +86,18 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person, color: Colors.pinkAccent),
+              title: const Text('Mon profile'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MonProfilePage(),
+                  ),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.add_circle, color: Colors.pinkAccent),

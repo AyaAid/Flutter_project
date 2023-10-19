@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:typed_data';
+import '../page/profileFormPage.dart';
 import 'constant.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
@@ -176,6 +177,46 @@ class MongoDataBase {
       print('Format d\'ID invalide : $eventId');
       return false;
     }
+  }
+  Future<UserProfile?> getUserProfile(String username) async {
+    if (_db == null) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection('users');
+    var result = await _collection.findOne({'username': username});
+
+    if (result != null) {
+      return UserProfile(
+        username: result['username'],
+        fullName: result['fullName'] ?? '',
+        email: result['email'] ?? '',
+        phoneNumber: result['phoneNumber'] ?? '',
+        link: result['linkedInProfile'] ?? '',
+        dateOfBirth: result['dateOfBirth'] != null
+            ? DateTime.parse(result['dateOfBirth'])
+            : DateTime.now(),
+      );
+    } else {
+      return null; // Utilisateur introuvable
+    }
+  }
+
+  Future<bool> updateUserProfile(UserProfile user) async {
+    if (_db == null) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection('users');
+    var result = await _collection.update(
+      where.eq('username', user.username),
+      modify
+          .set('fullName', user.fullName)
+          .set('email', user.email)
+          .set('phoneNumber', user.phoneNumber)
+          .set('linkedInProfile', user.link)
+          .set('dateOfBirth', user.dateOfBirth.toUtc().toIso8601String()),
+    );
+
+    return result != null;
   }
 }
 
