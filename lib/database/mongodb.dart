@@ -33,17 +33,26 @@ class MongoDataBase {
     return result != null;
   }
 
-  Future<List<Map<String, dynamic>>> getLastHorses() async {
+  Future<List<Map<String, dynamic>>> getLast(String collection) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
     }
-    _collection = _db.collection("horses");
+    _collection = _db.collection(collection);
     var result = await _collection.find(where.sortBy('_id', descending: true).limit(10));
-    List<Map<String, dynamic>> lastHorses = [];
-    await for (var horse in result) {
-      lastHorses.add(Map<String, dynamic>.from(horse));
+    List<Map<String, dynamic>> last = [];
+    await for (var data in result) {
+      last.add(Map<String, dynamic>.from(data));
     }
-    return lastHorses;
+    return last;
+  }
+
+  Future<List<Map<String, dynamic>>> get(String collection) async {
+    if (_db == null ) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection(collection);
+    var result = await _collection.find().toList();
+    return result;
   }
 
   Future<bool> verifyPw(String username, String email, String collection) async {

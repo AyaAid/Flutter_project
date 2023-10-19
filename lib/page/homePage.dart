@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchRecentHorses() async {
-    List<Map<String, dynamic>> recentHorses = await MongoDataBase().getLastHorses();
+    List<Map<String, dynamic>> recentHorses = await MongoDataBase().getLast("horses");
 
     setState(() {
       _lastHorses = recentHorses;
