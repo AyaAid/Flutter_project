@@ -13,18 +13,20 @@ class ContestFormModel {
   String? adress;
   Uint8List? image;
   DateTime? datetime;
+  bool? isVerify;
+  String? user;
 }
 
 class ContestFormPage extends StatefulWidget {
   const ContestFormPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _ContestPageState createState() => _ContestPageState();
 }
 
-class _LoginPageState extends State<ContestFormPage> {
+class _ContestPageState extends State<ContestFormPage> {
   final _formKey = GlobalKey<FormState>();
-  final _loginForm = ContestFormModel();
+  final _contestForm = ContestFormModel();
   final TextEditingController datetimeController = TextEditingController();
   File? _image;
 
@@ -36,7 +38,7 @@ class _LoginPageState extends State<ContestFormPage> {
       Uint8List imageBytes = await pickedFile.readAsBytes();
       setState(() {
         _image = File(pickedFile.path);
-        _loginForm.image = imageBytes;
+        _contestForm.image = imageBytes;
       });
     }
   }
@@ -81,7 +83,7 @@ class _LoginPageState extends State<ContestFormPage> {
                     return null;
                   },
                   onSaved: (value) {
-                    _loginForm.name = value!;
+                    _contestForm.name = value!;
                   },
                 ),
 
@@ -94,7 +96,7 @@ class _LoginPageState extends State<ContestFormPage> {
                     return null;
                   },
                   onSaved: (value) {
-                    _loginForm.name = value!;
+                    _contestForm.name = value!;
                   },
                 ),
 
@@ -104,14 +106,14 @@ class _LoginPageState extends State<ContestFormPage> {
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
                       context: context,
-                      initialDate: _loginForm.datetime ?? DateTime.now(),
+                      initialDate: _contestForm.datetime ?? DateTime.now(),
                       firstDate: DateTime(1900),
                       lastDate: DateTime.now(),
                     );
 
-                    if (pickedDate != null && pickedDate != _loginForm.datetime) {
+                    if (pickedDate != null && pickedDate != _contestForm.datetime) {
                       setState(() {
-                        _loginForm.datetime = pickedDate;
+                        _contestForm.datetime = pickedDate;
                         datetimeController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
                       });
                     }
@@ -137,11 +139,11 @@ class _LoginPageState extends State<ContestFormPage> {
                         isVerified = 1;
                       }
                       var contest = {
-                        'name': _loginForm.name,
-                        'adress': _loginForm.adress,
-                        'datetime': _loginForm.datetime,
-                        'image': _loginForm.image != null ? Uint8List.fromList(_loginForm.image as List<int>) : null,
-                        'isVerified': isVerified,
+                        'name': _contestForm.name,
+                        'adress': _contestForm.adress,
+                        'datetime': _contestForm.datetime,
+                        'image': _contestForm.image != null ? Uint8List.fromList(_contestForm.image as List<int>) : null,
+                        'isVerify': isVerified,
                         'user': loggedInUsername,
                       };
                       bool isValid = await MongoDataBase().addToDB(contest, "contests");
