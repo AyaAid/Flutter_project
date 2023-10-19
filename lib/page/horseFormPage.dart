@@ -43,7 +43,6 @@ class _HorsePageState extends State<HorseFormPage> {
         _image = File(pickedFile.path);
         _loginForm.image = imageBytes;
       });
-      print(_loginForm.image);
     }
   }
 

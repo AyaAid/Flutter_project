@@ -55,17 +55,26 @@ class MongoDataBase {
     return result != null;
   }
 
-  Future<List<Map<String, dynamic>>> getLastHorses() async {
+  Future<List<Map<String, dynamic>>> getLast(String collection) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
     }
-    _collection = _db.collection("horses");
+    _collection = _db.collection(collection);
     var result = await _collection.find(where.sortBy('_id', descending: true).limit(10));
-    List<Map<String, dynamic>> lastHorses = [];
-    await for (var horse in result) {
-      lastHorses.add(Map<String, dynamic>.from(horse));
+    List<Map<String, dynamic>> last = [];
+    await for (var data in result) {
+      last.add(Map<String, dynamic>.from(data));
     }
-    return lastHorses;
+    return last;
+  }
+
+  Future<List<Map<String, dynamic>>> get(String collection) async {
+    if (_db == null ) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection(collection);
+    var result = await _collection.find(where.eq('isVerify', 1)).toList();
+    return result;
   }
 
   Future<bool> verifyPw(String username, String email, String collection) async {
@@ -118,8 +127,58 @@ class MongoDataBase {
     return lastHorses;
   }
 
+  Future<void> addParticipant(String eventId, String username, String collection) async {
+    final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
+    if (idMatch != null) {
+      final extractedId = idMatch.group(1);
+      final id = ObjectId.parse(extractedId!);
 
+      final _collection = _db.collection(collection);
+      final result = await _collection.update(
+        where.eq('_id', id),
+        modify.push('participants', username),
+      );
+
+    } else {
+      print('Format d\'ID invalide : $eventId');
+    }
+  }
+
+
+  Future<void> removeParticipant(String eventId, String username, String collection) async {
+    final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
+    if (idMatch != null) {
+      final extractedId = idMatch.group(1);
+      final id = ObjectId.parse(extractedId!);
+
+      final _collection = _db.collection(collection);
+      final result = await _collection.update(
+        where.eq('_id', id),
+        modify.pull('participants', username),
+      );
+
+    } else {
+      print('Format d\'ID invalide : $eventId');
+    }
+  }
+
+  Future<bool> isUserParticipatingInEvent(String eventId, String username, String collection) async {
+    final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
+    if (idMatch != null) {
+      final extractedId = idMatch.group(1);
+      final id = ObjectId.parse(extractedId!);
+
+      final _collection = _db.collection(collection);
+      final result = await _collection.findOne(where.eq('_id', id).eq('participants', username));
+
+      return result != null;
+    } else {
+      print('Format d\'ID invalide : $eventId');
+      return false;
+    }
+  }
 }
+
 
 class SessionManager {
   static final SessionManager _instance = SessionManager._internal();
