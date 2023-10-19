@@ -24,12 +24,12 @@ class MongoDataBase {
     return result != null;
   }
   
-  Future<bool> addHorseToDB(Map<String, dynamic> horse, String collection) async {
+  Future<bool> addToDB(Map<String, dynamic> data, String collection) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
     }
     _collection = _db.collection(collection);
-    var result = await _collection.insert(horse);
+    var result = await _collection.insert(data);
     return result != null;
   }
 

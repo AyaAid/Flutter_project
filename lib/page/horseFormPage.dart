@@ -24,10 +24,10 @@ class HorseFormPage extends StatefulWidget {
   const HorseFormPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _HorsePageState createState() => _HorsePageState();
 }
 
-class _LoginPageState extends State<HorseFormPage> {
+class _HorsePageState extends State<HorseFormPage> {
   final _formKey = GlobalKey<FormState>();
   final _loginForm = HorseFormModel();
   final TextEditingController _birthdateController = TextEditingController();
@@ -43,6 +43,7 @@ class _LoginPageState extends State<HorseFormPage> {
         _image = File(pickedFile.path);
         _loginForm.image = imageBytes;
       });
+      print(_loginForm.image);
     }
   }
 
@@ -185,10 +186,10 @@ class _LoginPageState extends State<HorseFormPage> {
                       'gender': _loginForm.gender,
                       'speciality': _loginForm.speciality,
                       'isDP': isDP,
-                      'image': _loginForm.image,
+                      'image': Uint8List.fromList(_loginForm.image as List<int>),
                       'user': loggedInUsername,
                     };
-                    bool isValid = await MongoDataBase().addHorseToDB(horse, "horses");
+                    bool isValid = await MongoDataBase().addToDB(horse, "horses");
                     if (isValid) {
                       Navigator.push(
                         context,
