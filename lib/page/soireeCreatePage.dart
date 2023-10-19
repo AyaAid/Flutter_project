@@ -5,17 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+
 import '../database/mongodb.dart';
 import 'homePage.dart';
 
 class SoireeCreateFormModel {
-  Uint8List? image;
   String? theme;
   DateTime? datetime;
   String? adresse;
-  bool? typesoiree;
+  String? typesoiree;
 }
-
 
 class SoireeCreatePage extends StatefulWidget {
   @override
@@ -28,20 +27,10 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
 
   final TextEditingController _dateController = TextEditingController();
 
-  File? _image;
-
-  Future<void> _getImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80, maxHeight: 300, maxWidth: 300);
-
-    if (pickedFile != null) {
-      Uint8List imageBytes = await pickedFile.readAsBytes();
-      setState(() {
-        _image = File(pickedFile.path);
-        _soireeForm.image = imageBytes;
-      });
-      print(_soireeForm.image);
-    }
+  @override
+  void initState() {
+    super.initState();
+    _soireeForm.typesoiree = 'Apéro';
   }
 
   @override
@@ -60,6 +49,16 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
     final themeController = TextEditingController();
     final adresseController = TextEditingController();
 
+    String imageUrl = _soireeForm.typesoiree == 'Apéro'
+        ? 'https://www.domaine-picard.com/blog/wp-content/uploads/2020/09/planche-ap%C3%A9ro-gourmande-980x980.jpg'
+        : 'https://www.deco.fr/sites/default/files/styles/article_970x500/public/2022-03/shutterstock_1685806537.jpg?itok=p7o3Z5h2';
+
+    Image image = Image.network(
+      imageUrl,
+      width: 500,
+      height: 500,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Créer une Soirée'),
@@ -73,17 +72,7 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: _getImage,
-                  child: _image == null
-                      ? Container(
-                    width: 50,
-                    height: 50,
-                    color: Colors.pinkAccent,
-                    child: Icon(Icons.camera_alt, color: Colors.white),
-                  )
-                      : Image.file(_image!),
-                ),
+                image,
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _dateController,
@@ -124,7 +113,7 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
                 const SizedBox(height: 16),
                 RadioListTile(
                   title: Text('Apéro'),
-                  value: true,
+                  value: 'Apéro',
                   groupValue: _soireeForm.typesoiree,
                   onChanged: (value) {
                     setState(() {
@@ -134,7 +123,7 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
                 ),
                 RadioListTile(
                   title: Text('Repas'),
-                  value: false,
+                  value: 'Repas',
                   groupValue: _soireeForm.typesoiree,
                   onChanged: (value) {
                     setState(() {
@@ -186,11 +175,10 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
                         isVerify = 1;
                       }
                       var party = {
-                        'image': _soireeForm.image != null ? Uint8List.fromList(_soireeForm.image!) : Uint8List(0),
                         'theme': _soireeForm.theme,
                         'datetime': _soireeForm.datetime,
                         'adresse': _soireeForm.adresse,
-                        'type': _soireeForm.typesoiree == true ? 'Apéro' : 'Repas',
+                        'type': _soireeForm.typesoiree,
                         'isVerify': isVerify,
                         'user': loggedInUsername,
                       };
