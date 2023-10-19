@@ -1,5 +1,8 @@
 import 'dart:typed_data';
+import 'package:andrestable/page/contest.dart';
 import 'package:andrestable/page/horseFormPage.dart';
+import 'package:andrestable/page/soireeCreatePage.dart';
+import 'package:andrestable/page/soireePage.dart';
 import 'package:andrestable/page/lessonsFormPage.dart';
 import 'package:flutter/material.dart';
 
@@ -42,11 +45,22 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const HorseFormPage()),);
+                        builder: (context) => const HorseFormPage()
+                    ),
+                  );
                 },
                 child: const Text('Ajouter un compagnon'),
-
-
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SoireeCreatePage()
+                    ),
+                  );
+                },
+                child: const Text('Ajouter une soirée'),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -59,6 +73,18 @@ class _HomePageState extends State<HomePage> {
 
 
               ),
+
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ContestFormPage()),);
+                },
+                child: const Text('Ajouter une compétition'),
+              ),
+
+
               const SizedBox(height: 20.0),
               Expanded(
                 child: ListView.builder(
