@@ -1,10 +1,23 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import '../database/mongodb.dart';
+import '../database/constant.dart';
 import 'PageSoireeVerify.dart';
+
+class SoireeCreateFormModel {
+  Uint8List? image;
+  String? theme;
+  DateTime? datetime;
+  String? adresse;
+  bool? apero;
+  bool? repas;
+  bool? isVerify;
+}
 
 class PageSoireeCreate extends StatefulWidget {
   @override
@@ -12,22 +25,31 @@ class PageSoireeCreate extends StatefulWidget {
 }
 
 class _PageSoireeCreateState extends State<PageSoireeCreate> {
+  final _formKey = GlobalKey<FormState>();
+  final _soireeForm = SoireeCreateFormModel();
+
+  final TextEditingController _dateController = TextEditingController();
+
   File? _image;
 
   Future<void> _getImage() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 100,
-      maxHeight: 540,
-      maxWidth: 960,
-    );
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80, maxHeight: 300, maxWidth: 300);
 
     if (pickedFile != null) {
+      Uint8List imageBytes = await pickedFile.readAsBytes();
       setState(() {
         _image = File(pickedFile.path);
+        _soireeForm.image = imageBytes;
       });
+      print(_soireeForm.image);
     }
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    super.dispose();
   }
 
   bool aperoValue = false;
@@ -41,6 +63,9 @@ class _PageSoireeCreateState extends State<PageSoireeCreate> {
     final hours = dateTime.hour.toString().padLeft(2, '0');
     final minutes = dateTime.minute.toString().padLeft(2, '0');
 
+    final themeController = TextEditingController();
+    final adresseController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Créer une Soirée'),
@@ -49,6 +74,7 @@ class _PageSoireeCreateState extends State<PageSoireeCreate> {
         child: Container(
           margin: EdgeInsets.all(20),
           child: Form(
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center, // Centre les éléments verticalement
               crossAxisAlignment: CrossAxisAlignment.center, // Centre les éléments horizontalement
@@ -57,45 +83,59 @@ class _PageSoireeCreateState extends State<PageSoireeCreate> {
                   onTap: _getImage,
                   child: _image == null
                       ? Container(
-                    width: 200,
-                    height: 200,
+                    width: 50,
+                    height: 50,
                     color: Colors.pinkAccent,
                     child: Icon(Icons.camera_alt, color: Colors.white),
                   )
                       : Image.file(_image!),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  'Date et Heure',
-                  style: TextStyle(fontSize: 32),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center, // Centre les éléments horizontalement dans le Row
-                  children: [
-                    ElevatedButton(
-                      child: Text('${dateTime.day}/${dateTime.month}/${dateTime.year}'),
-                      onPressed: () async {
-                        final date = await pickDate();
-                        if (date == null) return; // Annuler
+                TextFormField(
+                  controller: _dateController,
+                  decoration: const InputDecoration(labelText: 'Date de naissance'),
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: _soireeForm.datetime ?? DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                    );
 
-                        setState(() => dateTime = date); // Ok
-                      },
-                    ),
-                    SizedBox(width: 16), // Espace entre les boutons
-                    ElevatedButton(
-                      child: Text('$hours:$minutes'),
-                      onPressed: () async {
-                        final time = await pickTime();
-                      },
-                    ),
-                  ],
+                    if (pickedDate != null && pickedDate != _soireeForm.datetime) {
+                      setState(() {
+                        _soireeForm.datetime = pickedDate;
+                        _dateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                      });
+                    }
+                  },
+                  readOnly: true,
                 ),
                 TextFormField(
+                  controller: themeController,
                   decoration: InputDecoration(labelText: 'Thème de la soirée'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Veuillez entrer le thème de votre soirée';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _soireeForm.theme = value!;
+                  },
                 ),
                 TextFormField(
+                  controller: adresseController,
                   decoration: InputDecoration(labelText: 'Adresse de la soirée'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Veuillez entrer l\'adresse de la soiree';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _soireeForm.adresse = value!;
+                  },
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -112,8 +152,10 @@ class _PageSoireeCreateState extends State<PageSoireeCreate> {
                           var isChecked = "";
                           if (aperoValue == true) {
                             isChecked = "checked";
+                            _soireeForm.apero = true;
                           } else {
                             isChecked = "un-checked";
+                            _soireeForm.apero = false;
                           }
                           selectedCheckBoxes[0] = aperoValue;
                         });
@@ -135,8 +177,10 @@ class _PageSoireeCreateState extends State<PageSoireeCreate> {
                           var isChecked = "";
                           if (repasValue == true) {
                             isChecked = "checked";
+                            _soireeForm.repas = true;
                           } else {
                             isChecked = "un-checked";
+                            _soireeForm.repas = false;
                           }
                           selectedCheckBoxes[1] = repasValue;
                         });
@@ -147,14 +191,44 @@ class _PageSoireeCreateState extends State<PageSoireeCreate> {
                 SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () async {
-                    // Effectuez l'enregistrement des informations dans la base de données MongoDB
-                    await saveSoireeToMongoDB();
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
 
-                    // Redirigez l'utilisateur vers une autre page
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => PageSoireeVerify()), // Remplacez AttenteValidationPage() par le nom de votre écran de validation
-                    );
+                      String? loggedInUsername = SessionManager().getLoggedInUser();
+                      if (loggedInUsername == null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => PageSoireeVerify()),
+                        );
+                      }
+                      int isVerify = 0;
+                      if(loggedInUsername == 'admin'){
+                        isVerify = 1;
+                      }
+                      var party = {
+                        'image': Uint8List.fromList(_soireeForm.image as List<int>),
+                        'theme': _soireeForm.theme,
+                        'datetime': _soireeForm.datetime,
+                        'adresse': _soireeForm.adresse,
+                        'apero': _soireeForm.apero,
+                        'repas': _soireeForm.repas,
+                        'isVerify': _soireeForm.isVerify,
+                      };
+                      bool isValid = await MongoDataBase().addHorseToDB(party, "partys");
+                      if (isValid) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => PageSoireeVerify()),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Impossible d\'envoyer votre demande de création de soirée pour le moment, réessayez plus tard'),
+                            duration: Duration(seconds: 3),
+                          ),
+                        );
+                      }
+                    }
                   },
                   child: Text('Créer la Soirée'),
                 )
@@ -164,31 +238,5 @@ class _PageSoireeCreateState extends State<PageSoireeCreate> {
         ),
       ),
     );
-  }
-
-  Future<DateTime?> pickDate() => showDatePicker(
-    context: context,
-    initialDate: dateTime,
-    firstDate: DateTime(1900),
-    lastDate: DateTime(2100),
-  );
-
-  Future<TimeOfDay?> pickTime() => showTimePicker(
-    context: context,
-    initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute),
-  );
-
-  Future<void> saveSoireeToMongoDB() async {
-    await MongoDataBase.connect();
-
-    final dataToInsert = {
-      'theme': 'Thème de la soirée',
-      'adresse': 'Adresse de la soirée',
-      'date': '${dateTime.day}/${dateTime.month}/${dateTime.year}',
-      'heure': '$hours:$minutes',
-      'apero': aperoValue,
-      'repas': repasValue,
-    };
-    await MongoDataBase.insertData(dataToInsert);
   }
 }

@@ -17,7 +17,7 @@ class _PageSoireeVerifyState extends State<PageSoireeVerify> {
         title: Text('En attente de validation'),
       ),
       body: Center(
-        child: Text('Votre demande de création de soirée a été envoyée aux gestionnaires.'),
+        child: Text('Votre demande de création de soirée a été envoyée aux gerants.'),
       ),
     );
   }
