@@ -1,11 +1,12 @@
 import 'dart:typed_data';
 
+import 'package:andrestable/page/soireePage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import '../database/mongodb.dart';
-import 'PageSoireeVerify.dart';
+import 'homePage.dart';
 
 class SoireeCreateFormModel {
   Uint8List? image;
@@ -17,12 +18,12 @@ class SoireeCreateFormModel {
   bool? isVerify;
 }
 
-class PageSoireeCreate extends StatefulWidget {
+class soireeCreatePage extends StatefulWidget {
   @override
   _PageSoireeCreateState createState() => _PageSoireeCreateState();
 }
 
-class _PageSoireeCreateState extends State<PageSoireeCreate> {
+class _PageSoireeCreateState extends State<soireeCreatePage> {
   final _formKey = GlobalKey<FormState>();
   final _soireeForm = SoireeCreateFormModel();
 
@@ -212,7 +213,7 @@ class _PageSoireeCreateState extends State<PageSoireeCreate> {
                       if (loggedInUsername == null) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => PageSoireeVerify()),
+                          MaterialPageRoute(builder: (context) => soireePage()),
                         );
                       }
                       int isVerify = 0;
@@ -232,7 +233,7 @@ class _PageSoireeCreateState extends State<PageSoireeCreate> {
                       if (isValid) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => PageSoireeVerify()),
+                          MaterialPageRoute(builder: (context) => HomePage()),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(

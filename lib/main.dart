@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
-
 import 'database/mongodb.dart';
+import 'package:andrestable/page//loginPage.dart';
 
-import 'pages/PageSoiree.dart';
-import 'pages/PageSoireeCreate.dart';
-import 'pages/PageSoireeValidate.dart';
-
-void main() async {
-
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
   await MongoDataBase.connect();
+  runApp(MyApp());
+}
 
-  runApp(MaterialApp(
-    home: PageSoireeCreate(),
-    theme: ThemeData(
-      primarySwatch: Colors.pink,
-    ),
-  ));
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pinkAccent),
+        useMaterial3: true,
+      ),
+      home: const LoginPage(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
 }
