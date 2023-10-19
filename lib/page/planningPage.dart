@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:andrestable/database/mongodb.dart';
 
+class Event {
+  final DateTime date;
+  final String name;
+  Event(this.date, this.name);
+}
+
 class PlanningPage extends StatefulWidget {
   @override
   _PlanningPageState createState() => _PlanningPageState();
@@ -12,7 +18,13 @@ class _PlanningPageState extends State<PlanningPage> {
   DateTime _focusedDay = DateTime.now();
   late DateTime _selectedDay;
 
-  List<String> events = []; // Liste des événements
+  List<Event> events = [
+    Event(DateTime(2023, 10, 25), 'Événement 1'),
+    Event(DateTime(2023, 10, 28), 'Événement 2'),
+  ];
+
+  List<Event> _events = [
+  ];
 
   @override
   void initState() {
@@ -24,7 +36,7 @@ class _PlanningPageState extends State<PlanningPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Calendrier de la semaine à venir'),
+        title: Text('Votre emploi du temps'),
       ),
       body: Column(
         children: [
@@ -46,28 +58,24 @@ class _PlanningPageState extends State<PlanningPage> {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
               });
-              updateEvents(selectedDay);
             },
           ),
           Expanded(
             child: ListView.builder(
               itemCount: events.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(events[index]),
-                );
+                if (isSameDay(_selectedDay, events[index].date)) {
+                  return ListTile(
+                    title: Text(events[index].name),
+                  );
+                } else {
+                  return SizedBox.shrink();
+                }
               },
             ),
           ),
         ],
       ),
     );
-  }
-
-  void updateEvents(DateTime selectedDay) {
-    setState(() {
-      events.clear();
-
-    });
   }
 }

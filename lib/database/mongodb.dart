@@ -72,15 +72,15 @@ class MongoDataBase {
     return result != null;
   }
 
-  Future<bool> getEvent(DateTime date, String username, String collection) async {
+  Future<bool> getEvent(DateTime date, String title) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
     }
-    _collection = _db.collection(collection);
+    _collection = _db.collection('lessons');
 
     var result = await _collection.find({
-      'date': date,
-      'username': username,
+      'datetime': date,
+      'place': title,
     });
     return result != null;
   }
