@@ -1,11 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:andrestable/page/soireePage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
-
 import '../database/mongodb.dart';
 import 'homePage.dart';
 
@@ -14,6 +8,8 @@ class SoireeCreateFormModel {
   DateTime? datetime;
   String? adresse;
   String? typesoiree;
+  bool? isVerify;
+  String? user;
 }
 
 class SoireeCreatePage extends StatefulWidget {
@@ -64,6 +60,7 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
         title: Text('Créer une Soirée'),
       ),
       body: Center(
+        child: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.all(20),
           child: Form(
@@ -178,7 +175,7 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
                         'theme': _soireeForm.theme,
                         'datetime': _soireeForm.datetime,
                         'adresse': _soireeForm.adresse,
-                        'type': _soireeForm.typesoiree,
+                        'typesoiree': _soireeForm.typesoiree,
                         'isVerify': isVerify,
                         'user': loggedInUsername,
                       };
@@ -204,6 +201,7 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
             ),
           ),
         ),
+      ),
       ),
     );
   }

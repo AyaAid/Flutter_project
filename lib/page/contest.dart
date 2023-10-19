@@ -96,7 +96,7 @@ class _ContestPageState extends State<ContestFormPage> {
                     return null;
                   },
                   onSaved: (value) {
-                    _contestForm.name = value!;
+                    _contestForm.adress = value!;
                   },
                 ),
 

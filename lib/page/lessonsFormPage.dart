@@ -13,7 +13,8 @@ class LessonsFormModel {
   DateTime? dateTime;
   String? duration;
   String? discipline;
-  bool? isValidate;
+  bool? isVerify;
+  String? user;
 }
 
 class LessonsFormPage extends StatefulWidget {
@@ -150,7 +151,8 @@ class _LessonsPageState extends State<LessonsFormPage> {
                         'dateTime': _lessonsForm.dateTime,
                         'duration': _lessonsForm.duration,
                         'discipline': _lessonsForm.discipline,
-                        'isValidate': isValidate,
+                        'isVerify': isValidate,
+                        'user': loggedInUsername,
                       };
                       bool isValid = await MongoDataBase().addToDB(horse, "lessons");
                       if (isValid) {
