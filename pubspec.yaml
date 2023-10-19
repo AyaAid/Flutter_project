@@ -31,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   mongo_dart: ^0.9.3
-  image_picker: ^0.8.7
+  image_picker: ^1.0.4
   flutter_image_compress: ^2.0.4
 
 
