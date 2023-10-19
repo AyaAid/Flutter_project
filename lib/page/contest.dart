@@ -51,7 +51,7 @@ class _LoginPageState extends State<ContestFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ajouter un compagnon'),
+        title: const Text('Ajouter une compétition'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -67,16 +67,29 @@ class _LoginPageState extends State<ContestFormPage> {
                     width: 50,
                     height: 50,
                     color: Colors.pinkAccent,
-                    child: Icon(Icons.camera_alt, color: Colors.white),
+                    child: const Icon(Icons.camera_alt, color: Colors.white),
                   )
                       : Image.file(_image!),
                 ),
 
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Nom de ma licorne'),
+                  decoration: const InputDecoration(labelText: 'Nom de la compétition'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Veuillez entrer le nom de la compétition';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _loginForm.name = value!;
+                  },
+                ),
+
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Adresse de la compétition'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Veuillez entrer l\'adresse de la compétition';
                     }
                     return null;
                   },
@@ -106,22 +119,6 @@ class _LoginPageState extends State<ContestFormPage> {
                   readOnly: true,
                 ),
 
-                DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(labelText: 'Spécialité de la licorne'),
-                  value: _loginForm.speciality,
-                  items: ['Dressage', 'Saut', 'Endurance', 'Complet'].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _loginForm.speciality = newValue;
-                    });
-                  },
-                ),
-
                 const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () async {
@@ -132,33 +129,31 @@ class _LoginPageState extends State<ContestFormPage> {
                       if (loggedInUsername == null) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
+                          MaterialPageRoute(builder: (context) => const LoginPage()),
                         );
                       }
-                      int isDP = 0;
+                      int isVerified = 0;
                       if(loggedInUsername == 'admin'){
-                        isDP = 1;
+                        isVerified = 1;
                       }
                       var contest = {
                         'name': _loginForm.name,
+                        'adress': _loginForm.adress,
                         'datetime': _loginForm.datetime,
-                        'horse_dress': _loginForm.horse_dress,
-                        'race': _loginForm.race,
-                        'gender': _loginForm.gender,
-                        'speciality': _loginForm.speciality,
-                        'isDP': isDP,
-                        'image': _loginForm.image,
+                        'image': _loginForm.image != null ? Uint8List.fromList(_loginForm.image as List<int>) : null,
+                        'isVerified': isVerified,
+                        'user': loggedInUsername,
                       };
-                      bool isValid = await MongoDataBase().addHorseToDB(horse, "horses");
+                      bool isValid = await MongoDataBase().addToDB(contest, "contests");
                       if (isValid) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
+                          MaterialPageRoute(builder: (context) => const HomePage()),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Impossible d\'ajouter votre licorne pour le moment, réessayez plus tard'),
+                            content: Text('Impossible d\'ajouter votre compétition pour le moment, réessayez plus tard'),
                             duration: Duration(seconds: 3),
                           ),
                         );
@@ -171,7 +166,7 @@ class _LoginPageState extends State<ContestFormPage> {
                   onPressed: () async {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => const HomePage()),
                     );
 
                   },

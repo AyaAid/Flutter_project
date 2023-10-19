@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:andrestable/page/contest.dart';
 import 'package:andrestable/page/horseFormPage.dart';
 import 'package:andrestable/page/soireeCreatePage.dart';
 import 'package:andrestable/page/soireePage.dart';
