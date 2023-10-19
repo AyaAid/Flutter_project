@@ -1,10 +1,12 @@
 import 'dart:typed_data';
 import 'package:andrestable/page/contest.dart';
 import 'package:andrestable/page/horseFormPage.dart';
+import 'package:andrestable/page/profileFormPage.dart';
 import 'package:andrestable/page/soireeCreatePage.dart';
 import 'package:andrestable/page/lessonsFormPage.dart';
 import 'package:flutter/material.dart';
 import '../database/mongodb.dart';
+import 'adminPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -86,6 +88,18 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
+              leading: const Icon(Icons.person, color: Colors.pinkAccent),
+              title: const Text('Mon profile'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MonProfilePage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.add_circle, color: Colors.pinkAccent),
               title: const Text('Ajouter un compagnon'),
               onTap: () {
@@ -133,6 +147,20 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
+            if(loggedInUsername == 'admin')
+              ListTile(
+                leading: const Icon(Icons.star, color: Colors.pinkAccent),
+                title: const Text('Accès Admin'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AdminPage()
+                  ,
+                    ),
+                  );
+                },
+              ),
           ],
         ),
       ),
