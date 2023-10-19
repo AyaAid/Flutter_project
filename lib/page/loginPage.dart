@@ -1,6 +1,7 @@
 
 import 'package:andrestable/page/forgotPwPage.dart';
 import 'package:andrestable/page/homePage.dart';
+import 'package:andrestable/page/inscriptionPage.dart';
 import 'package:flutter/material.dart';
 import 'package:andrestable/database/mongodb.dart';
 
@@ -83,6 +84,17 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 child: const Text('Se connecter'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NewAccount(),
+                    ),
+                  );
+                },
+                child: const Text("S'inscrire"),
               ),
               TextButton(
                 onPressed: () {
