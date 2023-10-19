@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:andrestable/page/soireePage.dart';
 import 'package:flutter/material.dart';
 import '../database/mongodb.dart';
@@ -10,6 +12,7 @@ class SoireeCreateFormModel {
   String? typesoiree;
   bool? isVerify;
   String? user;
+  List<String>? participants;
 }
 
 class SoireeCreatePage extends StatefulWidget {
@@ -178,6 +181,7 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
                         'typesoiree': _soireeForm.typesoiree,
                         'isVerify': isVerify,
                         'user': loggedInUsername,
+                        'participants': _soireeForm.participants ?? []..add(loggedInUsername!),
                       };
                       bool isValid = await MongoDataBase().addToDB(party, "partys");
                       if (isValid) {

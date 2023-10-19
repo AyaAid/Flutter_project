@@ -1,10 +1,6 @@
-
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:andrestable/page/loginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:andrestable/database/mongodb.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'homePage.dart';
 
@@ -15,6 +11,7 @@ class LessonsFormModel {
   String? discipline;
   bool? isVerify;
   String? user;
+  List<String>? participants;
 }
 
 class LessonsFormPage extends StatefulWidget {
@@ -153,6 +150,7 @@ class _LessonsPageState extends State<LessonsFormPage> {
                         'discipline': _lessonsForm.discipline,
                         'isVerify': isValidate,
                         'user': loggedInUsername,
+                        'participants': _lessonsForm.participants ?? []..add(loggedInUsername!),
                       };
                       bool isValid = await MongoDataBase().addToDB(horse, "lessons");
                       if (isValid) {

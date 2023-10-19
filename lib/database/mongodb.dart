@@ -127,8 +127,58 @@ class MongoDataBase {
     return lastHorses;
   }
 
+  Future<void> addParticipant(String eventId, String username, String collection) async {
+    final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
+    if (idMatch != null) {
+      final extractedId = idMatch.group(1);
+      final id = ObjectId.parse(extractedId!);
 
+      final _collection = _db.collection(collection);
+      final result = await _collection.update(
+        where.eq('_id', id),
+        modify.push('participants', username),
+      );
+
+    } else {
+      print('Format d\'ID invalide : $eventId');
+    }
+  }
+
+
+  Future<void> removeParticipant(String eventId, String username, String collection) async {
+    final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
+    if (idMatch != null) {
+      final extractedId = idMatch.group(1);
+      final id = ObjectId.parse(extractedId!);
+
+      final _collection = _db.collection(collection);
+      final result = await _collection.update(
+        where.eq('_id', id),
+        modify.pull('participants', username),
+      );
+
+    } else {
+      print('Format d\'ID invalide : $eventId');
+    }
+  }
+
+  Future<bool> isUserParticipatingInEvent(String eventId, String username, String collection) async {
+    final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
+    if (idMatch != null) {
+      final extractedId = idMatch.group(1);
+      final id = ObjectId.parse(extractedId!);
+
+      final _collection = _db.collection(collection);
+      final result = await _collection.findOne(where.eq('_id', id).eq('participants', username));
+
+      return result != null;
+    } else {
+      print('Format d\'ID invalide : $eventId');
+      return false;
+    }
+  }
 }
+
 
 class SessionManager {
   static final SessionManager _instance = SessionManager._internal();

@@ -4,7 +4,6 @@ import 'package:andrestable/page/horseFormPage.dart';
 import 'package:andrestable/page/soireeCreatePage.dart';
 import 'package:andrestable/page/lessonsFormPage.dart';
 import 'package:flutter/material.dart';
-
 import '../database/mongodb.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,10 +14,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Map<String, bool> userParticipation = {};
   List<Map<String, dynamic>> _lastHorses = [];
   List<Map<String, dynamic>> _parties = [];
   List<Map<String, dynamic>> _lessons = [];
   List<Map<String, dynamic>> _contest = [];
+  String? loggedInUsername = SessionManager().getLoggedInUser();
+  Map<String, EventData> eventDataMap = {};
 
   @override
   void initState() {
@@ -31,6 +33,25 @@ class _HomePageState extends State<HomePage> {
     List<Map<String, dynamic>> parties = await MongoDataBase().get("partys");
     List<Map<String, dynamic>> lessons = await MongoDataBase().get("lessons");
     List<Map<String, dynamic>> contest = await MongoDataBase().get("contests");
+
+    await Future.forEach(parties, (party) async {
+      final eventId = party['_id'].toString();
+      final isParticipating = await MongoDataBase().isUserParticipatingInEvent(eventId, loggedInUsername!, 'partys');
+      eventDataMap[eventId] = EventData(party, isParticipating);
+    });
+
+    await Future.forEach(lessons, (lesson) async {
+      final eventId = lesson['_id'].toString();
+      final isParticipating = await MongoDataBase().isUserParticipatingInEvent(eventId, loggedInUsername!, 'lessons');
+      eventDataMap[eventId] = EventData(lesson, isParticipating);
+    });
+
+    await Future.forEach(contest, (cont) async {
+      final eventId = cont['_id'].toString();
+      final isParticipating = await MongoDataBase().isUserParticipatingInEvent(eventId, loggedInUsername!, 'contests');
+      eventDataMap[eventId] = EventData(cont, isParticipating);
+    });
+
 
     setState(() {
       _lastHorses = recentHorses;
@@ -119,7 +140,6 @@ class _HomePageState extends State<HomePage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Section pour les chevaux
               _buildCategoryCard(
                 categoryTitle: 'Dernière Licornes',
                 itemList: _lastHorses,
@@ -127,54 +147,115 @@ class _HomePageState extends State<HomePage> {
                   final horse = item as Map<String, dynamic>;
                   Uint8List imageBytes = Uint8List.fromList(List<int>.from(horse['image']));
                   return ListTile(
-                    title: Text('Nom de la licorne: ${horse['name']}'),
-                    subtitle: Text('Nom du créateur: ${horse['user']}'),
+                      title: Text('Nom de la licorne: ${horse['name']}'),
+                  subtitle: Text('Nom du créateur: ${horse['user']}'),
                     leading: imageBytes != null
                         ? Image.memory(imageBytes)
                         : const Icon(Icons.add_a_photo),
-                  );
+                   );
                 },
               ),
-
-              // Section pour les soirées
               _buildCategoryCard(
                 categoryTitle: 'Soirées',
                 itemList: _parties,
-                itemBuilder: (item) {
+                itemBuilder: (item){
                   final party = item as Map<String, dynamic>;
+                  final eventId = party['_id'].toString();
+                  final eventData = eventDataMap[eventId];
+                  final isParticipating = eventData?.isUserParticipating ?? false;
                   return ListTile(
                     title: Text('${party['theme']}'),
                     subtitle: Text('${party['datetime']} || ${party['adresse']} || ${party['typesoiree']}'),
+                      leading: isParticipating
+                          ? const Icon(
+                        Icons.check_box,
+                        color: Colors.green,
+                      )
+                          : const Icon(
+                        Icons.check_box_outline_blank,
+                        color: Colors.grey,
+                      ),
+                      onTap: () {
+                        setState(() {
+                          userParticipation[eventId] = !isParticipating;
+                          if (isParticipating) {
+                            MongoDataBase().removeParticipant(
+                                eventId, loggedInUsername!, 'partys');
+                          } else {
+                            MongoDataBase().addParticipant(eventId, loggedInUsername!, 'partys');
+                          }
+                        });
+                      }
                   );
                 },
               ),
 
-              // Section pour les leçons
               _buildCategoryCard(
                 categoryTitle: 'Leçons',
                 itemList: _lessons,
                 itemBuilder: (item) {
                   final lessons = item as Map<String, dynamic>;
+                  final eventId = lessons['_id'].toString();
+                  final eventData = eventDataMap[eventId];
+                  final isParticipating = eventData?.isUserParticipating ?? false;
                   return ListTile(
                     title: Text('Leçon de ${lessons['discipline']}'),
                     subtitle: Text('${lessons['dateTime']} || ${lessons['place']} || ${lessons['duration']}'),
+                      leading: isParticipating
+                          ? const Icon(
+                        Icons.check_box,
+                        color: Colors.green,
+                      )
+                          : const Icon(
+                        Icons.check_box_outline_blank,
+                        color: Colors.grey,
+                      ),
+                      onTap: () {
+                        setState(() {
+                          userParticipation[eventId] = !isParticipating;
+                          if (isParticipating) {
+                            MongoDataBase().removeParticipant(
+                                eventId, loggedInUsername!, 'lessons');
+                          } else {
+                            MongoDataBase().addParticipant(eventId, loggedInUsername!, 'lessons');
+                          }
+                        });
+                      }
                   );
                 },
               ),
 
-              // Section pour les compétitions
               _buildCategoryCard(
                 categoryTitle: 'Compétitions',
                 itemList: _contest,
                 itemBuilder: (item) {
                   final contest = item as Map<String, dynamic>;
+                  final eventId = contest['_id'].toString();
+                  final isParticipating = userParticipation[eventId] ?? false;
                   Uint8List imageBytes = Uint8List.fromList(List<int>.from(contest['image']));
                   return ListTile(
                     title: Text('Compétition : ${contest['name']}'),
                     subtitle: Text('${contest['datetime']} || ${contest['adress']}'),
-                    leading: imageBytes != null
-                        ? Image.memory(imageBytes)
-                        : const Icon(Icons.add_a_photo),
+                      leading: isParticipating
+                          ? const Icon(
+                        Icons.check_box,
+                        color: Colors.green,
+                      )
+                          : const Icon(
+                        Icons.check_box_outline_blank,
+                        color: Colors.grey,
+                      ),
+                      onTap: () {
+                        setState(() {
+                          userParticipation[eventId] = !isParticipating;
+                          if (isParticipating) {
+                            MongoDataBase().removeParticipant(
+                                eventId, loggedInUsername!, 'contests');
+                          } else {
+                            MongoDataBase().addParticipant(eventId, loggedInUsername!, 'contests');
+                          }
+                        });
+                      }
                   );
                 },
               ),
@@ -215,4 +296,11 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+class EventData {
+  final Map<String, dynamic> eventInfo;
+  final bool isUserParticipating;
+
+  EventData(this.eventInfo, this.isUserParticipating);
 }
