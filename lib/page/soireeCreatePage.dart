@@ -14,7 +14,6 @@ class SoireeCreateFormModel {
   DateTime? datetime;
   String? adresse;
   bool? typesoiree;
-  bool? isVerify;
 }
 
 
