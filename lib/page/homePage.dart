@@ -1,4 +1,6 @@
+import 'dart:typed_data';
 import 'package:andrestable/page/horseFormPage.dart';
+import 'package:andrestable/page/lessonsFormPage.dart';
 import 'package:flutter/material.dart';
 
 import '../database/mongodb.dart';
@@ -46,18 +48,36 @@ class _HomePageState extends State<HomePage> {
 
 
               ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LessonsFormPage()),);
+                },
+                child: const Text('Ajouter une leçon'),
+
+
+              ),
               const SizedBox(height: 20.0),
               Expanded(
                 child: ListView.builder(
                   itemCount: _lastHorses.length,
                   itemBuilder: (context, index) {
                     final horse = _lastHorses[index];
+
+                    Uint8List imageBytes = Uint8List.fromList(List<int>.from(horse['image']));
+
+
                     return ListTile(
                       title: Text('Nom du cheval: ${horse['name']}'),
                       subtitle: Text('Nom du créateur: ${horse['user']}'),
+                      leading: imageBytes != null
+                          ? Image.memory(imageBytes)
+                          : Icon(Icons.image),
                     );
                   },
-                ),
+                )
               ),
             ],)
       ),
