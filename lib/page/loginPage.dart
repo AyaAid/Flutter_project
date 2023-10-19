@@ -64,10 +64,11 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    bool idValid = await MongoDataBase().verifyLog(
-                        _loginForm.username, _loginForm.password);
+                    bool isValid = await MongoDataBase().verifyLog(
+                        _loginForm.username, _loginForm.password, 'users');
 
-                    if (idValid) {
+                    if (isValid) {
+                      SessionManager().setLoggedInUser(_loginForm.username);
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => HomePage()),
