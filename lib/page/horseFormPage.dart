@@ -62,167 +62,168 @@ class _LoginPageState extends State<HorseFormPage> {
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: _getImage,
-                  child: _image == null
-                      ? Container(
-                    width: 50,
-                    height: 50,
-                    color: Colors.pinkAccent,
-                    child: Icon(Icons.camera_alt, color: Colors.white),
-                  )
-                      : Image.file(_image!),
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Nom de ma licorne'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer le nom de la licorne';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _loginForm.name = value!;
-                  },
-                ),
-                TextFormField(
-                  controller: _birthdateController,
-                  decoration: const InputDecoration(labelText: 'Date de naissance'),
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: _loginForm.birthdate ?? DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime.now(),
-                    );
+          key: _formKey,
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: _getImage,
+                child: _image == null
+                    ? Container(
+                  width: 50,
+                  height: 50,
+                  color: Colors.pinkAccent,
+                  child: Icon(Icons.camera_alt, color: Colors.white),
+                )
+                    : Image.file(_image!),
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Nom de ma licorne'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer le nom de la licorne';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _loginForm.name = value!;
+                },
+              ),
+              TextFormField(
+                controller: _birthdateController,
+                decoration: const InputDecoration(labelText: 'Date de naissance'),
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: _loginForm.birthdate ?? DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                  );
 
-                    if (pickedDate != null && pickedDate != _loginForm.birthdate) {
-                      setState(() {
-                        _loginForm.birthdate = pickedDate;
-                        _birthdateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                      });
-                    }
-                  },
-                  readOnly: true,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Robe'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer la robe de la licorne';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _loginForm.horse_dress = value!;
-                  },
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Race'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer la race de la licorne';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _loginForm.race = value!;
-                  },
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Genre'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer le genre de la licorne';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _loginForm.gender = value!;
-                  },
-                ),
-                DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(labelText: 'Spécialité de la licorne'),
-                  value: _loginForm.speciality,
-                  items: ['Dressage', 'Saut', 'Endurance', 'Complet'].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
+                  if (pickedDate != null && pickedDate != _loginForm.birthdate) {
                     setState(() {
-                      _loginForm.speciality = newValue;
+                      _loginForm.birthdate = pickedDate;
+                      _birthdateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
                     });
-                  },
-                ),
+                  }
+                },
+                readOnly: true,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Robe'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer la robe de la licorne';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _loginForm.horse_dress = value!;
+                },
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Race'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer la race de la licorne';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _loginForm.race = value!;
+                },
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Genre'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer le genre de la licorne';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _loginForm.gender = value!;
+                },
+              ),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(labelText: 'Spécialité de la licorne'),
+                value: _loginForm.speciality,
+                items: ['Dressage', 'Saut', 'Endurance', 'Complet'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _loginForm.speciality = newValue;
+                  });
+                },
+              ),
 
-                const SizedBox(height: 20.0),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
+              const SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
 
-                      String? loggedInUsername = SessionManager().getLoggedInUser();
-                      if (loggedInUsername == null) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                        );
-                      }
-                      int isDP = 0;
-                      if(loggedInUsername == 'admin'){
-                        isDP = 1;
-                      }
-                      var horse = {
-                        'name': _loginForm.name,
-                        'birthdate': _loginForm.birthdate,
-                        'horse_dress': _loginForm.horse_dress,
-                        'race': _loginForm.race,
-                        'gender': _loginForm.gender,
-                        'speciality': _loginForm.speciality,
-                        'isDP': isDP,
-                        'image': _loginForm.image,
-                        'user': loggedInUsername,
-                      };
-                      bool isValid = await MongoDataBase().addHorseToDB(horse, "horses");
-                      if (isValid) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Impossible d\'ajouter votre licorne pour le moment, réessayez plus tard'),
-                            duration: Duration(seconds: 3),
-                          ),
-                        );
-                      }
+                    String? loggedInUsername = SessionManager().getLoggedInUser();
+                    if (loggedInUsername == null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                      );
                     }
-                  },
-                  child: const Text('Ajouter'),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
+                    int isDP = 0;
+                    if(loggedInUsername == 'admin'){
+                      isDP = 1;
+                    }
+                    var horse = {
+                      'name': _loginForm.name,
+                      'birthdate': _loginForm.birthdate,
+                      'horse_dress': _loginForm.horse_dress,
+                      'race': _loginForm.race,
+                      'gender': _loginForm.gender,
+                      'speciality': _loginForm.speciality,
+                      'isDP': isDP,
+                      'image': _loginForm.image,
+                      'user': loggedInUsername,
+                    };
+                    bool isValid = await MongoDataBase().addHorseToDB(horse, "horses");
+                    if (isValid) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomePage()),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Impossible d\'ajouter votre licorne pour le moment, réessayez plus tard'),
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+                    }
+                  }
+                },
+                child: const Text('Ajouter'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
 
-                  },
-                  child: const Text('Annuler'),),
+                },
+              child: const Text('Annuler'),),
 
-              ],
-            ),
-
+            ],
           ),
+
+        ),
         ),
       ),
 
     );
   }
 }
+

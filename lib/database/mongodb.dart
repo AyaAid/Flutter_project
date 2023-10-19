@@ -7,8 +7,8 @@ class MongoDataBase {
   static late DbCollection _collection;
 
   static connect() async{
-    _db = await Db.create(MONGO_URL);
-    await _db.open();
+      _db = await Db.create(MONGO_URL);
+      await _db.open();
 
 
   }
@@ -23,7 +23,7 @@ class MongoDataBase {
     });
     return result != null;
   }
-
+  
   Future<bool> addHorseToDB(Map<String, dynamic> horse, String collection) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
@@ -93,5 +93,6 @@ class SessionManager {
   }
 
 }
+
 
 

@@ -1,5 +1,4 @@
 import 'package:andrestable/page/horseFormPage.dart';
-import 'package:andrestable/page/soireeCreatePage.dart';
 import 'package:flutter/material.dart';
 
 import '../database/mongodb.dart';
@@ -41,24 +40,12 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const HorseFormPage()
-                    ),
-                  );
+                        builder: (context) => const HorseFormPage()),);
                 },
                 child: const Text('Ajouter un compagnon'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => soireeCreatePage(),
-                    ),
-                  );
-                },
-                child: const Text('Ajouter une soirée'),
-              ),
 
+
+              ),
               const SizedBox(height: 20.0),
               Expanded(
                 child: ListView.builder(
@@ -72,9 +59,9 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
-            ],
-          )
+            ],)
       ),
     );
   }
 }
+
