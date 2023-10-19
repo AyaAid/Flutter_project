@@ -64,7 +64,7 @@ class _ForgotPwPageState extends State<ForgotPwPage> {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
                       bool idValid = await MongoDataBase().verifyPw(
-                          _modifyPw.username, _modifyPw.email);
+                          _modifyPw.username, _modifyPw.email, "users");
 
                       if (idValid) {
                         _showModifyPwDialog();
@@ -116,7 +116,7 @@ class _ForgotPwPageState extends State<ForgotPwPage> {
             TextButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  bool idValid = await MongoDataBase().changePw(_modifyPw.username, _modifyPw.email, newPassword);
+                  bool idValid = await MongoDataBase().changePw(_modifyPw.username, _modifyPw.email, newPassword, "users");
                   setState(() {
                     if (idValid) {
                       Navigator.of(context).pop();
