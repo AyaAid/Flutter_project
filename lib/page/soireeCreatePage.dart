@@ -13,10 +13,10 @@ class SoireeCreateFormModel {
   String? theme;
   DateTime? datetime;
   String? adresse;
-  bool? apero;
-  bool? repas;
+  bool? typesoiree;
   bool? isVerify;
 }
+
 
 class SoireeCreatePage extends StatefulWidget {
   @override
@@ -51,16 +51,12 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
     super.dispose();
   }
 
-  bool aperoValue = false;
-  bool repasValue = false;
   List<bool> selectedCheckBoxes = [false, false];
 
   DateTime dateTime = DateTime(2023, 10, 18, 17, 15);
 
   @override
   Widget build(BuildContext context) {
-    final hours = dateTime.hour.toString().padLeft(2, '0');
-    final minutes = dateTime.minute.toString().padLeft(2, '0');
 
     final themeController = TextEditingController();
     final adresseController = TextEditingController();
@@ -97,7 +93,7 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
                     DateTime? pickedDate = await showDatePicker(
                       context: context,
                       initialDate: _soireeForm.datetime ?? DateTime.now(),
-                      firstDate: DateTime(1900),
+                      firstDate: DateTime.now(),
                       lastDate: DateTime(2100),
                     );
 
@@ -126,6 +122,27 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
                   },
                   readOnly: true,
                 ),
+                const SizedBox(height: 16),
+                RadioListTile(
+                  title: Text('Apéro'),
+                  value: true,
+                  groupValue: _soireeForm.typesoiree,
+                  onChanged: (value) {
+                    setState(() {
+                      _soireeForm.typesoiree = value;
+                    });
+                  },
+                ),
+                RadioListTile(
+                  title: Text('Repas'),
+                  value: false,
+                  groupValue: _soireeForm.typesoiree,
+                  onChanged: (value) {
+                    setState(() {
+                      _soireeForm.typesoiree = value;
+                    });
+                  },
+                ),
                 TextFormField(
                   controller: themeController,
                   decoration: InputDecoration(labelText: 'Thème de la soirée'),
@@ -152,57 +169,6 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
                     _soireeForm.adresse = value!;
                   },
                 ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Text('Apéro : '),
-                    Checkbox(
-                      value: aperoValue,
-                      checkColor: Colors.white,
-                      activeColor: Colors.pinkAccent,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          aperoValue = value!;
-
-                          var isChecked = "";
-                          if (aperoValue == true) {
-                            isChecked = "checked";
-                            _soireeForm.apero = true;
-                          } else {
-                            isChecked = "un-checked";
-                            _soireeForm.apero = false;
-                          }
-                          selectedCheckBoxes[0] = aperoValue;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Text('Repas : '),
-                    Checkbox(
-                      value: repasValue,
-                      checkColor: Colors.white,
-                      activeColor: Colors.pinkAccent,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          repasValue = value!;
-
-                          var isChecked = "";
-                          if (repasValue == true) {
-                            isChecked = "checked";
-                            _soireeForm.repas = true;
-                          } else {
-                            isChecked = "un-checked";
-                            _soireeForm.repas = false;
-                          }
-                          selectedCheckBoxes[1] = repasValue;
-                        });
-                      },
-                    ),
-                  ],
-                ),
                 SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () async {
@@ -225,11 +191,11 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
                         'theme': _soireeForm.theme,
                         'datetime': _soireeForm.datetime,
                         'adresse': _soireeForm.adresse,
-                        'apero': _soireeForm.apero,
-                        'repas': _soireeForm.repas,
-                        'isVerify': _soireeForm.isVerify,
+                        'type': _soireeForm.typesoiree == true ? 'Apéro' : 'Repas',
+                        'isVerify': isVerify,
+                        'user': loggedInUsername,
                       };
-                      bool isValid = await MongoDataBase().addHorseToDB(party, "partys");
+                      bool isValid = await MongoDataBase().addToDB(party, "partys");
                       if (isValid) {
                         Navigator.push(
                           context,
