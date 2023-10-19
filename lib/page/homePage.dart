@@ -1,6 +1,6 @@
 import 'dart:typed_data';
-
 import 'package:andrestable/page/horseFormPage.dart';
+import 'package:andrestable/page/lessonsFormPage.dart';
 import 'package:flutter/material.dart';
 
 import '../database/mongodb.dart';
@@ -45,6 +45,17 @@ class _HomePageState extends State<HomePage> {
                         builder: (context) => const HorseFormPage()),);
                 },
                 child: const Text('Ajouter un compagnon'),
+
+
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LessonsFormPage()),);
+                },
+                child: const Text('Ajouter une leçon'),
 
 
               ),

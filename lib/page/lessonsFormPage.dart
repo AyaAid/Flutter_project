@@ -48,7 +48,7 @@ class _LessonsPageState extends State<LessonsFormPage> {
             child: Column(
               children: [
                 DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(labelText: 'Spécialité de la licorne'),
+                  decoration: const InputDecoration(labelText: 'Lieu de la leçon'),
                   value: _lessonsForm.place,
                   items: ['Carrière', 'Manège'].map((String value) {
                     return DropdownMenuItem<String>(
@@ -73,12 +73,28 @@ class _LessonsPageState extends State<LessonsFormPage> {
                       lastDate: DateTime(2100),
                     );
 
-                    if (pickedDate != null && pickedDate != _lessonsForm.dateTime) {
-                      setState(() {
-                        _lessonsForm.dateTime = pickedDate;
-                        _dateTimeController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                      });
+                    if (pickedDate != null) {
+                      TimeOfDay? pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+
+                      if (pickedTime != null) {
+                        DateTime selectedDateTime = DateTime(
+                          pickedDate.year,
+                          pickedDate.month,
+                          pickedDate.day,
+                          pickedTime.hour,
+                          pickedTime.minute,
+                        );
+
+                        setState(() {
+                          _lessonsForm.dateTime = selectedDateTime;
+                          _dateTimeController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year} ${pickedTime.format(context)}";
+                        });
+                      }
                     }
+
                   },
                   readOnly: true,
                 ),
