@@ -229,7 +229,7 @@ class _PageSoireeCreateState extends State<SoireeCreatePage> {
                         'repas': _soireeForm.repas,
                         'isVerify': _soireeForm.isVerify,
                       };
-                      bool isValid = await MongoDataBase().addHorseToDB(party, "partys");
+                      bool isValid = await MongoDataBase().addToDB(party, "partys");
                       if (isValid) {
                         Navigator.push(
                           context,

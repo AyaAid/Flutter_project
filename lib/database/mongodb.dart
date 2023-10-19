@@ -23,7 +23,7 @@ class MongoDataBase {
     });
     return result != null;
   }
-  
+
   Future<bool> addToDB(Map<String, dynamic> data, String collection) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');

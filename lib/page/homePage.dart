@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:andrestable/page/contest.dart';
 import 'package:andrestable/page/horseFormPage.dart';
 import 'package:andrestable/page/soireeCreatePage.dart';
 import 'package:andrestable/page/soireePage.dart';
@@ -72,6 +73,18 @@ class _HomePageState extends State<HomePage> {
 
 
               ),
+
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ContestFormPage()),);
+                },
+                child: const Text('Ajouter une compétition'),
+              ),
+
+
               const SizedBox(height: 20.0),
               Expanded(
                 child: ListView.builder(
