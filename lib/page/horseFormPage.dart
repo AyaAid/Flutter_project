@@ -43,6 +43,7 @@ class _LoginPageState extends State<HorseFormPage> {
         _image = File(pickedFile.path);
         _loginForm.image = imageBytes;
       });
+      print(_loginForm.image);
     }
   }
 
@@ -185,7 +186,7 @@ class _LoginPageState extends State<HorseFormPage> {
                       'gender': _loginForm.gender,
                       'speciality': _loginForm.speciality,
                       'isDP': isDP,
-                      'image': _loginForm.image,
+                      'image': Uint8List.fromList(_loginForm.image as List<int>),
                       'user': loggedInUsername,
                     };
                     bool isValid = await MongoDataBase().addHorseToDB(horse, "horses");
