@@ -1,7 +1,9 @@
-import 'package:andrestable/main.dart';
+
+import 'package:andrestable/page/forgotPwPage.dart';
 import 'package:andrestable/page/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:andrestable/database/mongodb.dart';
+
 
 class LoginFormModel {
   String username = '';
@@ -61,10 +63,11 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    bool idValid = await MongoDataBase().verifyLog(
-                        _loginForm.username, _loginForm.password);
+                    bool isValid = await MongoDataBase().verifyLog(
+                        _loginForm.username, _loginForm.password, 'users');
 
-                    if (idValid) {
+                    if (isValid) {
+                      SessionManager().setLoggedInUser(_loginForm.username);
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => HomePage()),
@@ -80,6 +83,17 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 child: const Text('Se connecter'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ForgotPwPage(),
+                    ),
+                  );
+                },
+                child: const Text('Mot de passe oublié ?'),
               ),
             ],
           ),

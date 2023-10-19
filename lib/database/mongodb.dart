@@ -7,35 +7,22 @@ class MongoDataBase {
   static late Db _db;
   static late DbCollection _collection;
 
-  static connect() async {
-    _db = await Db.create(MONGO_URL);
-    await _db.open();
-    inspect(_db);
-    _collection = _db.collection(COLLECTION_NAME);
+
+  static connect() async{
+      _db = await Db.create(MONGO_URL);
+      await _db.open();
+
+
   }
-
-  Future<bool> verifyLog(String username, String password) async {
-    if (_db == null || _collection == null) {
-      throw Exception(
-          'La connexion à la base de données n\'a pas été établie.');
+  Future<bool> verifyLog(String username, String password, String collection) async {
+    if (_db == null) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
     }
-
+    _collection = _db.collection(collection);
     var result = await _collection.findOne({
       'username': username,
       'password': password,
     });
-    return result != null;
-  }
-  Future<bool> createUser( String username, String mail, String password, Uint8List image) async{
-    if (_db == null || _collection == null) {
-      throw Exception('La connexion à la base de données n\'a pas été établie.');
-    }
-    var result = await _collection.insertOne({
-      'username': username,
-      'password': password,
-      'email': mail,
-      'image': image
-  });
     return result != null;
   }
   Future<bool> addUserToDB(Map<String, dynamic> users, String collection) async {
@@ -46,6 +33,54 @@ class MongoDataBase {
     var result = await _collection.insert(users);
     return result != null;
   }
+  
+  Future<bool> addHorseToDB(Map<String, dynamic> horse, String collection) async {
+    if (_db == null ) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection(collection);
+    var result = await _collection.insert(horse);
+    return result != null;
+  }
+
+  Future<List<Map<String, dynamic>>> getLastHorses() async {
+    if (_db == null ) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection("horses");
+    var result = await _collection.find(where.sortBy('_id', descending: true).limit(10));
+    List<Map<String, dynamic>> lastHorses = [];
+    await for (var horse in result) {
+      lastHorses.add(Map<String, dynamic>.from(horse));
+    }
+    return lastHorses;
+  }
+
+  Future<bool> verifyPw(String username, String email, String collection) async {
+    if (_db == null ) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection(collection);
+
+    var result = await _collection.find({
+      'username': username,
+      'email': email,
+    });
+    return result != null;
+  }
+  Future<bool> changePw(String username, String email, String password, String collection) async {
+    if (_db == null ) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection(collection);
+    var result = await _collection.update(
+      where.eq('username', username).eq('email', email),
+      modify.set('password', password),
+    );
+
+    return result != null;
+  }
+
   Future<List<Map<String, dynamic>>> getEmail() async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
@@ -58,6 +93,7 @@ class MongoDataBase {
     }
     return lastEmail;
   }
+
   Future<bool> getUsername(Map<String, dynamic> users, String collection) async {
     if (_db == null) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
@@ -73,5 +109,26 @@ class MongoDataBase {
     return result != null;
   }
 
+
+}
+
+class SessionManager {
+  static final SessionManager _instance = SessionManager._internal();
+
+  factory SessionManager() {
+    return _instance;
+  }
+
+  SessionManager._internal();
+
+  String? loggedInUser;
+
+  void setLoggedInUser(String user) {
+    loggedInUser = user;
+  }
+
+  String? getLoggedInUser() {
+    return loggedInUser;
+  }
 
 }
