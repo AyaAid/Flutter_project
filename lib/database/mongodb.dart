@@ -58,14 +58,20 @@ class MongoDataBase {
     }
     return lastEmail;
   }
-  Future<String> getUsername(String username) async {
-    if (_db == null ) {
+  Future<bool> getUsername(Map<String, dynamic> users, String collection) async {
+    if (_db == null) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
     }
-    _collection = _db.collection("users");
-    var result = await _collection.findOne({
-      'username': username,
-    });
-    return username;
+    _collection = _db.collection(collection);
+
+    var existingUser = await _collection.findOne({'email': users['email']});
+    if (existingUser != null) {
+      return false;
+    }
+
+    var result = await _collection.insert(users);
+    return result != null;
   }
+
+
 }

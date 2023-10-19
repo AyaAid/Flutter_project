@@ -41,6 +41,7 @@ class _CreateAccount extends State<NewAccount> {
       });
     }
   }
+  
 
 
 
@@ -66,9 +67,6 @@ class _CreateAccount extends State<NewAccount> {
                 validator: (value){
                   if (value == null || value.isEmpty){
                     return 'Entrez votre username';
-                  }
-                  else if (value == MongoDataBase().getUsername(value)){
-                    return 'Ce pseudo existe déjà';
                   }
                   return null;
                 },
