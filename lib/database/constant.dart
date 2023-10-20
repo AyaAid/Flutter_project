@@ -2,3 +2,4 @@ const MONGO_URL = "mongodb+srv://ayaaid:andresstable@cluster0.pwqwzrh.mongodb.ne
 const COLLECTION_NAME = "users";
 const COLLECTION_HORSE = "horses";
 const COLLECTION_PARTYS = "partys";
+const COLLECTION_PROFILES = "profiles";

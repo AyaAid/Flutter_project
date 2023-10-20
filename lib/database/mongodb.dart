@@ -71,6 +71,32 @@ class MongoDataBase {
     return result != null;
   }
 
+  
+Future<bool> updateProfileInfo(Map<String, dynamic> updatedData) async {
+  if (_db == null) {
+    throw Exception('La connexion à la base de données n\'a pas été établie.');
+  }
+  _collection = _db.collection('profiles');
+
+  final username = SessionManager().getLoggedInUser();
+
+  var result = await _collection.update(
+    where.eq('username', username), {
+      r'$set': {
+        'name': updatedData['name'],
+        'email': updatedData['email'],
+        'dateOfBirth': updatedData['dateOfBirth'],
+        'phone': updatedData['phone'],
+        'ffeLink': updatedData['ffeLink'],
+      }
+    },
+  );
+
+  return result != null;
+}
+
+
+
 }
 
 class SessionManager {
@@ -91,6 +117,8 @@ class SessionManager {
   String? getLoggedInUser() {
     return loggedInUser;
   }
+
+  get(String s) {}
 
 }
 

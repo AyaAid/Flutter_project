@@ -1,3 +1,4 @@
+import 'package:andrestable/page/homePage.dart';
 import 'package:flutter/material.dart';
 import 'database/mongodb.dart';
 import 'package:andrestable/page//loginPage.dart';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }

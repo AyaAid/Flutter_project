@@ -5,7 +5,7 @@ import 'package:andrestable/page/soireeCreatePage.dart';
 import 'package:andrestable/page/soireePage.dart';
 import 'package:andrestable/page/lessonsFormPage.dart';
 import 'package:flutter/material.dart';
-
+import '../page/profilePage.dart';
 import '../database/mongodb.dart';
 
 class HomePage extends StatefulWidget {
@@ -83,6 +83,15 @@ class _HomePageState extends State<HomePage> {
                 },
                 child: const Text('Ajouter une compétition'),
               ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(
+                   context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()), 
+                      );
+                     },
+                 child: const Text('Mon profil'),
+                ),
 
 
               const SizedBox(height: 20.0),
