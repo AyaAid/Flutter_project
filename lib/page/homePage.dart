@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:andrestable/page/horseFormPage.dart';
 import 'package:andrestable/page/soireeCreatePage.dart';
-import 'package:andrestable/page/soireePage.dart';
+import 'package:andrestable/page/gerantPage.dart';
 import 'package:andrestable/page/lessonsFormPage.dart';
 import 'package:flutter/material.dart';
 
@@ -66,11 +66,22 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const LessonsFormPage()),);
+                        builder: (context) => GerantPage()
+                    ),
+                  );
+                },
+                child: const Text('Gerant - Admin'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LessonsFormPage()
+                    ),
+                  );
                 },
                 child: const Text('Ajouter une leçon'),
-
-
               ),
               const SizedBox(height: 20.0),
               Expanded(

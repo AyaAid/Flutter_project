@@ -23,7 +23,7 @@ class MongoDataBase {
     });
     return result != null;
   }
-  
+
   Future<bool> addToDB(Map<String, dynamic> data, String collection) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
@@ -69,6 +69,47 @@ class MongoDataBase {
     );
 
     return result != null;
+  }
+
+  Future<List<Map<String, dynamic>>?> getUnverifiedPartys() async {
+    if (_db == null) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection('partys');
+
+    final query = where.eq('isVerify', 0);
+    final result = await _collection.find(query).toList();
+
+    if (result.isNotEmpty) {
+      return result.map((e) => Map<String, dynamic>.from(e)).toList();
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> changePartyVerificationStatus(String partyId, int newStatus) async {
+    try {
+      if (_db == null) {
+        throw Exception('La connexion à la base de données n\'a pas été établie.');
+      }
+
+      final partyCollection = _db.collection('partys');
+
+      final result = await partyCollection.update(
+        where.eq('_id', partyId),
+        modify.set('isVerify', newStatus == 1),
+      );
+
+      return result != null && (result['ok'] == 1 || result['updatedExisting'] == true);
+    } catch (e) {
+      print("Erreur lors de la mise à jour de l'état de validation de la soirée : $e");
+      return false;
+    }
+  }
+
+  Future<void> deletePartyById(String id) async {
+    final collection = _db.collection('partys');
+    await collection.remove(where.eq('_id', ObjectId.fromHexString(id)));
   }
 
 }
