@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import '../database/mongodb.dart';
 import 'dart:io';
+import 'dart:convert';
+import 'package:andrestable/page/homePage.dart';
+import 'dart:typed_data';
+import 'package:image_picker/image_picker.dart';
 
 class UserProfile {
   String username;
@@ -120,6 +124,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _birthdateController = TextEditingController();
   late UserProfile _editedUser;
+  File? _image;
+
+  Future<void> _getImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80, maxHeight: 300, maxWidth: 300);
+
+    if (pickedFile != null) {
+      Uint8List imageBytes = await pickedFile.readAsBytes();
+      setState(() {
+        _image = File(pickedFile.path);
+        _editedUser.image = imageBytes;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -213,27 +231,31 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 },
                 readOnly: true,
               ),
+              Padding(padding: EdgeInsets.all(20)),
+              GestureDetector(
+                onTap: _getImage,
+                child: _image == null
+                    ? Container(
+                  width: 50,
+                  height: 50,
+                  color: Colors.pinkAccent,
+                  child: Icon(Icons.camera_alt, color: Colors.white),
+                )
+                    : Image.file(_image!),
+              ),
 
               ElevatedButton(
-                onPressed: () async {
-                  bool check = await MongoDataBase().checkUser(
-                      _editedUser.username, _editedUser.email, 'users');
-                  if (check) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                            'Cet email et/ ou username est déjà utilisé !'),
-                        duration: Duration(seconds: 3),
-                      ),
-                    );
-                  }
-                  else if (_formKey.currentState!.validate()) {
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     MongoDataBase().updateUserProfile(_editedUser).then((success) {
                       if (success) {
-                        Navigator.pop(context);
-                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                        );
                       }
+                      return ('Sauvegarde effectuée !');
                     });
                   }
                 },
