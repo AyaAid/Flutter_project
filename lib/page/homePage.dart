@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:andrestable/form/contest.dart';
 import 'package:andrestable/form/horseFormPage.dart';
+import 'package:andrestable/form/loginPage.dart';
 import 'package:andrestable/form/profileFormPage.dart';
 import 'package:andrestable/form/soireeCreatePage.dart';
 import 'package:andrestable/form/lessonsFormPage.dart';
@@ -174,6 +175,18 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
+            ListTile(
+              leading: const Icon(Icons.person, color: Colors.pinkAccent),
+              title: const Text('Déconnexion'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginPage(),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
