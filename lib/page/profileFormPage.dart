@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-
+import 'dart:typed_data';
 import '../database/mongodb.dart';
+import 'dart:io';
 
 class UserProfile {
   String username;
-  String fullName;
   String email;
+  String fullName;
   String phoneNumber;
   String link;
   DateTime dateOfBirth;
+  Uint8List? image;
 
   UserProfile({
     required this.username,
@@ -17,6 +19,7 @@ class UserProfile {
     required this.phoneNumber,
     required this.link,
     required this.dateOfBirth,
+    required this.image,
   });
 }
 
@@ -151,6 +154,32 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 },
               ),
               TextFormField(
+                initialValue: _editedUser.username,
+                decoration: InputDecoration(labelText: 'Username'),
+                onSaved: (value) {
+                  _editedUser.username = value!;
+                },
+              ),
+              TextFormField(
+                initialValue: _editedUser.email,
+                decoration: InputDecoration(labelText: 'Email'),
+                validator: (value) {
+                  final emailRegex = RegExp(r"^[a-z0-9.a-z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+
+                  if (value == null || value.isEmpty) {
+                    return 'Entrez votre email';
+                  } else if (!emailRegex.hasMatch(value)) {
+                    return 'Entrez une adresse e-mail valide';
+                  }
+
+
+                  return null;
+                },
+                onSaved: (value) {
+                  _editedUser.email = value!;
+                },
+              ),
+              TextFormField(
                 initialValue: _editedUser.phoneNumber,
                 decoration: InputDecoration(labelText: 'Téléphone'),
                 onSaved: (value) {
@@ -185,28 +214,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 readOnly: true,
               ),
 
-              TextFormField(
-                initialValue: _editedUser.email,
-                decoration: InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  final emailRegex = RegExp(r"^[a-z0-9.a-z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-
-                  if (value == null || value.isEmpty) {
-                    return 'Entrez votre email';
-                  } else if (!emailRegex.hasMatch(value)) {
-                    return 'Entrez une adresse e-mail valide';
-                  }
-
-
-                  return null;
-                },
-                onSaved: (value) {
-                  _editedUser.email = value!;
-                },
-              ),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
+                onPressed: () async {
+                  bool check = await MongoDataBase().checkUser(
+                      _editedUser.username, _editedUser.email, 'users');
+                  if (check) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                            'Cet email et/ ou username est déjà utilisé !'),
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+                  }
+                  else if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     MongoDataBase().updateUserProfile(_editedUser).then((success) {
                       if (success) {

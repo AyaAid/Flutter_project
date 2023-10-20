@@ -195,6 +195,7 @@ class MongoDataBase {
         dateOfBirth: result['dateOfBirth'] != null
             ? DateTime.parse(result['dateOfBirth'])
             : DateTime.now(),
+        image: result['image'] ?? '',
       );
     } else {
       return null; // Utilisateur introuvable

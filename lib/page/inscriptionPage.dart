@@ -24,7 +24,6 @@ class NewAccount extends StatefulWidget {
 class _CreateAccount extends State<NewAccount> {
   final _formKey = GlobalKey<FormState>();
   final _accountForm = AccountFormModel();
-  String hashedpassword = '';
   File? _image;
 
   Future<void> _getImage() async {
