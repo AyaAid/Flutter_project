@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'dart:typed_data';
-import '../page/profileFormPage.dart';
+import '../form/profileFormPage.dart';
 import 'constant.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
@@ -291,6 +291,17 @@ class MongoDataBase {
 
     return result != null;
   }
+
+  Future<List<Map<String, dynamic>>> getEventsForUser(String username, String collection) async {
+    if (_db == null) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection(collection);
+    var result = await _collection.find(where.eq('participants', username)).toList();
+    return result;
+  }
+
+
 }
 
 
