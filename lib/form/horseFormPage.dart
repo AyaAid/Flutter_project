@@ -15,7 +15,7 @@ class HorseFormModel {
   String? race;
   String? gender;
   String? speciality;
-  bool? isDP;
+  int? isDP;
   Uint8List? image;
   String? user;
 }
@@ -159,6 +159,16 @@ class _HorsePageState extends State<HorseFormPage> {
                   });
                 },
               ),
+              if (SessionManager().getLoggedInUser() == "admin")
+          SwitchListTile(
+          title: const Text('Licorne DP'),
+      value: _loginForm.isDP == 1,
+      onChanged: (value) {
+        setState(() {
+          _loginForm.isDP = (value ? 1 : 0);
+        });
+      },
+    ),
 
               const SizedBox(height: 20.0),
               ElevatedButton(
@@ -173,10 +183,6 @@ class _HorsePageState extends State<HorseFormPage> {
                         MaterialPageRoute(builder: (context) => LoginPage()),
                       );
                     }
-                    int isDP = 0;
-                    if(loggedInUsername == 'admin'){
-                      isDP = 1;
-                    }
                     var horse = {
                       'name': _loginForm.name,
                       'birthdate': _loginForm.birthdate,
@@ -184,7 +190,7 @@ class _HorsePageState extends State<HorseFormPage> {
                       'race': _loginForm.race,
                       'gender': _loginForm.gender,
                       'speciality': _loginForm.speciality,
-                      'isDP': isDP,
+                      'isDP': _loginForm.isDP,
                       'image': Uint8List.fromList(_loginForm.image as List<int>),
                       'user': loggedInUsername,
                     };

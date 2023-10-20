@@ -24,7 +24,6 @@ class NewAccount extends StatefulWidget {
 class _CreateAccount extends State<NewAccount> {
   final _formKey = GlobalKey<FormState>();
   final _accountForm = AccountFormModel();
-  String hashedpassword = '';
   File? _image;
 
   Future<void> _getImage() async {
@@ -86,9 +85,6 @@ class _CreateAccount extends State<NewAccount> {
                   } else if (!emailRegex.hasMatch(value)) {
                     return 'Entrez une adresse e-mail valide';
                   }
-                    else if (value == MongoDataBase().getEmail()){
-                    return 'Cette adresse mail existe déjà';
-                  }
 
 
                   return null;
@@ -105,7 +101,7 @@ class _CreateAccount extends State<NewAccount> {
                   labelText: 'Mot de passe',
                 ),
                 validator: (value) {
-                  final passwordRegex = RegExp(r"^[A-Z0-9]+[a-z0-9]+[!#$%&'*+-/=?^_`{|}~]+[0-9]");
+                  final passwordRegex = RegExp(r"^(?=.*[A-Z])(?=.*[a-z])(?=.*[!#$%&'*+-/=?^_`{|}~])(?=.*\d).{8,}$");
 
                   if (value == null || value.isEmpty) {
                     return 'Entrez votre mot de passe';

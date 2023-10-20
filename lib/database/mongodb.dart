@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:convert';
 import 'dart:typed_data';
 import '../form/profileFormPage.dart';
 import 'constant.dart';
@@ -109,7 +110,7 @@ class MongoDataBase {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
     }
     _collection = _db.collection(collection);
-    var result = await _collection.find(where.eq('isVerify', 0)).toList();
+    var result = await _collection.find(where.eq('isVerify', 0).eq('isVerify', true)).toList();
     return result;
   }
 
@@ -190,32 +191,6 @@ class MongoDataBase {
     return result != null;
   }
 
-
-  Future<List<Map<String, dynamic>>> getEmail() async {
-    if (_db == null ) {
-      throw Exception('La connexion à la base de données n\'a pas été établie.');
-    }
-    _collection = _db.collection("users");
-    var result = await _collection.find(where.sortBy('email', descending: true));
-    List<Map<String, dynamic>> lastEmail = [];
-    await for (var email in result) {
-      lastEmail.add(Map<String, dynamic>.from(email));
-    }
-    return lastEmail;
-  }
-  Future<List<Map<String, dynamic>>> getUsername() async {
-    if (_db == null ) {
-      throw Exception('La connexion à la base de données n\'a pas été établie.');
-    }
-    _collection = _db.collection("users");
-    var result = await _collection.find(where.sortBy('username', descending: true).limit(10));
-    List<Map<String, dynamic>> lastHorses = [];
-    await for (var horse in result) {
-      lastHorses.add(Map<String, dynamic>.from(horse));
-    }
-    return lastHorses;
-  }
-
   Future<void> addParticipant(String eventId, String username, String collection) async {
     final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
     if (idMatch != null) {
@@ -274,6 +249,17 @@ class MongoDataBase {
     var result = await _collection.findOne({'username': username});
 
     if (result != null) {
+      Uint8List? imageBytes;
+      final imageData = result['image'];
+
+      if (imageData is String) {
+        if (imageData.isNotEmpty) {
+          imageBytes = Uint8List.fromList(base64Decode(imageData));
+        }
+      } else if (imageData is List<int>) {
+        imageBytes = Uint8List.fromList(imageData);
+      }
+
       return UserProfile(
         username: result['username'],
         fullName: result['fullName'] ?? '',
@@ -283,10 +269,12 @@ class MongoDataBase {
         dateOfBirth: result['dateOfBirth'] != null
             ? DateTime.parse(result['dateOfBirth'])
             : DateTime.now(),
+        image: imageBytes,
       );
     } else {
-      return null; // Utilisateur introuvable
+      return null;
     }
+
   }
 
   Future<bool> updateUserProfile(UserProfile user) async {
@@ -301,7 +289,8 @@ class MongoDataBase {
           .set('email', user.email)
           .set('phoneNumber', user.phoneNumber)
           .set('linkedInProfile', user.link)
-          .set('dateOfBirth', user.dateOfBirth.toUtc().toIso8601String()),
+          .set('dateOfBirth', user.dateOfBirth.toUtc().toIso8601String())
+          .set('image', user.image)
     );
 
     return result != null;
