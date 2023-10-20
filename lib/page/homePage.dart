@@ -413,42 +413,84 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showPartyInfoPopup(Map<String, dynamic> party) {
+    String comment = '';
+    List<dynamic> comments = (party['comments'] as List<dynamic>? ?? []);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Informations sur la soirée',
-            style: TextStyle(
-              color: Colors.pink,
-            ),
-          ),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Thème : ${party['theme']}'),
-              Text('Date et Heure : ${party['datetime']}'),
-              Text('Adresse : ${party['adresse']}'),
-              Text('Type de soirée : ${party['typesoiree']}'),
-              Text('Demande de : ${party['user']}'),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Fermer',
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text(
+                'Informations sur la soirée',
                 style: TextStyle(
-                  color: Colors.pinkAccent,
+                  color: Colors.pink,
                 ),
               ),
-            ),
-          ],
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Thème : ${party['theme']}'),
+                  Text('Date et Heure : ${party['datetime']}'),
+                  Text('Adresse : ${party['adresse']}'),
+                  Text('Type de soirée : ${party['typesoiree']}'),
+                  Text('Demande de : ${party['user']}'),
+                  Text('Commentaires :'),
+                  if (comments.isNotEmpty)
+                    Column(
+                      children: comments.map((commentData) {
+                        return Text('${commentData['username']}: ${commentData['comment']}');
+                      }).toList(),
+                    ),
+                  TextField(
+                    decoration: InputDecoration(labelText: 'Ajouter un commentaire'),
+                    onChanged: (text) {
+                      setState(() {
+                        comment = text;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'Fermer',
+                    style: TextStyle(
+                      color: Colors.pinkAccent,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    if (comment.isNotEmpty) {
+                      await MongoDataBase().addComment(party['_id'].toString(), loggedInUsername!, comment, 'partys');
+                      comments.add({'username': loggedInUsername, 'comment': comment});
+                      setState(() {
+                        comment = '';
+                      });
+                    }
+                  },
+                  child: const Text(
+                    'Ajouter un commentaire',
+                    style: TextStyle(
+                      color: Colors.pinkAccent,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
     );
   }
+
 
   void _showLessonInfoPopup(Map<String, dynamic> lessons) {
     showDialog(
