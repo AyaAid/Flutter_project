@@ -1,10 +1,8 @@
 import 'dart:typed_data';
 import 'package:andrestable/form/contest.dart';
-import 'package:andrestable/page/planningPage.dart';
 import 'package:andrestable/form/horseFormPage.dart';
 import 'package:andrestable/form/profileFormPage.dart';
 import 'package:andrestable/form/soireeCreatePage.dart';
-import 'package:andrestable/page/soireePage.dart';
 import 'package:andrestable/form/lessonsFormPage.dart';
 import 'package:andrestable/page/participations.dart';
 import 'package:flutter/material.dart';
@@ -171,7 +169,7 @@ class _HomePageState extends State<HomePage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const AdminPage()
-                  ,
+                      ,
                     ),
                   );
                 },
@@ -190,12 +188,12 @@ class _HomePageState extends State<HomePage> {
                   final horse = item as Map<String, dynamic>;
                   Uint8List imageBytes = Uint8List.fromList(List<int>.from(horse['image']));
                   return ListTile(
-                      title: Text('Nom de la licorne: ${horse['name']}'),
-                  subtitle: Text('Nom du créateur: ${horse['user']}'),
+                    title: Text('Nom de la licorne: ${horse['name']}'),
+                    subtitle: Text('Nom du créateur: ${horse['user']}'),
                     leading: imageBytes != null
                         ? Image.memory(imageBytes)
                         : const Icon(Icons.add_a_photo),
-                   );
+                  );
                 },
               ),
               _buildCategoryCard(
@@ -207,8 +205,8 @@ class _HomePageState extends State<HomePage> {
                   final eventData = eventDataMap[eventId];
                   final isParticipating = eventData?.isUserParticipating ?? false;
                   return ListTile(
-                    title: Text('${party['theme']}'),
-                    subtitle: Text('${party['datetime']} || ${party['adresse']} || ${party['typesoiree']}'),
+                      title: Text('${party['theme']}'),
+                      subtitle: Text('${party['datetime']} || ${party['adresse']} || ${party['typesoiree']}'),
                       leading: isParticipating
                           ? const Icon(
                         Icons.check_box,
@@ -242,8 +240,8 @@ class _HomePageState extends State<HomePage> {
                   final eventData = eventDataMap[eventId];
                   final isParticipating = eventData?.isUserParticipating ?? false;
                   return ListTile(
-                    title: Text('Leçon de ${lessons['discipline']}'),
-                    subtitle: Text('${lessons['dateTime']} || ${lessons['place']} || ${lessons['duration']}'),
+                      title: Text('Leçon de ${lessons['discipline']}'),
+                      subtitle: Text('${lessons['dateTime']} || ${lessons['place']} || ${lessons['duration']}'),
                       leading: isParticipating
                           ? const Icon(
                         Icons.check_box,
@@ -268,38 +266,6 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
 
-
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PlanningPage()),);
-                },
-                child: const Text('Vérifier votre emploi du temps'),
-              ),
-
-
-              const SizedBox(height: 20.0),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _lastHorses.length,
-                  itemBuilder: (context, index) {
-                    final horse = _lastHorses[index];
-
-                    Uint8List imageBytes = Uint8List.fromList(List<int>.from(horse['image']));
-
-
-                    return ListTile(
-                      title: Text('Nom du cheval: ${horse['name']}'),
-                      subtitle: Text('Nom du créateur: ${horse['user']}'),
-                      leading: imageBytes != null
-                          ? Image.memory(imageBytes)
-                          : Icon(Icons.image),
-                    );
-                  },
-                )
-
               _buildCategoryCard(
                 categoryTitle: 'Compétitions',
                 itemList: _contest,
@@ -309,8 +275,8 @@ class _HomePageState extends State<HomePage> {
                   final isParticipating = userParticipation[eventId] ?? false;
                   Uint8List imageBytes = Uint8List.fromList(List<int>.from(contest['image']));
                   return ListTile(
-                    title: Text('Compétition : ${contest['name']}'),
-                    subtitle: Text('${contest['datetime']} || ${contest['adress']}'),
+                      title: Text('Compétition : ${contest['name']}'),
+                      subtitle: Text('${contest['datetime']} || ${contest['adress']}'),
                       leading: isParticipating
                           ? const Icon(
                         Icons.check_box,
