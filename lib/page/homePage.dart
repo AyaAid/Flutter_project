@@ -388,6 +388,7 @@ class _HomePageState extends State<HomePage> {
 
   void _showPartyInfoPopup(Map<String, dynamic> party) {
     String comment = '';
+    List<dynamic> comments = (party['comments'] as List<dynamic>? ?? []);
 
     showDialog(
       context: context,
@@ -411,9 +412,9 @@ class _HomePageState extends State<HomePage> {
                   Text('Type de soirée : ${party['typesoiree']}'),
                   Text('Demande de : ${party['user']}'),
                   Text('Commentaires :'),
-                  if (party.containsKey('comments'))
+                  if (comments.isNotEmpty)
                     Column(
-                      children: (party['comments'] as List<dynamic>).map((commentData) {
+                      children: comments.map((commentData) {
                         return Text('${commentData['username']}: ${commentData['comment']}');
                       }).toList(),
                     ),
@@ -440,11 +441,14 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
-                    MongoDataBase().addComment(party['_id'].toString(), loggedInUsername!, comment, 'partys');
-
-                    Navigator.of(context).pop();
-                    _showPartyInfoPopup(party);
+                  onPressed: () async {
+                    if (comment.isNotEmpty) {
+                      await MongoDataBase().addComment(party['_id'].toString(), loggedInUsername!, comment, 'partys');
+                      comments.add({'username': loggedInUsername, 'comment': comment});
+                      setState(() {
+                        comment = '';
+                      });
+                    }
                   },
                   child: const Text(
                     'Ajouter un commentaire',
