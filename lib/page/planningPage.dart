@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../database/mongodb.dart';
 
 class Event {
   final DateTime date;
@@ -18,11 +19,9 @@ class _PlanningPageState extends State<PlanningPage> {
   CalendarFormat _calendarFormat = CalendarFormat.week;
   DateTime _focusedDay = DateTime.now();
   late DateTime _selectedDay;
+  MongoDataBase mongo = MongoDataBase();
 
-  List<Event> events = [
-    Event(DateTime(2023, 10, 25), 'Événement 1'),
-    Event(DateTime(2023, 10, 28), 'Événement 2'),
-  ];
+  final events = [];
 
   @override
   void initState() {
@@ -55,6 +54,7 @@ class _PlanningPageState extends State<PlanningPage> {
               setState(() {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
+                Future<List<String>?> events = mongo.getDateTime(_selectedDay);
               });
             },
           ),
@@ -62,13 +62,9 @@ class _PlanningPageState extends State<PlanningPage> {
             child: ListView.builder(
               itemCount: events.length,
               itemBuilder: (context, index) {
-                if (isSameDay(_selectedDay, events[index].date)) {
-                  return ListTile(
-                    title: Text(events[index].name),
-                  );
-                } else {
-                  return const SizedBox.shrink();
-                }
+                return ListTile(
+                  title: Text(events[index]),
+                );
               },
             ),
           ),

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import '../form/profileFormPage.dart';
 import 'constant.dart';
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:intl/intl.dart';
 
 class MongoDataBase {
   static late Db _db;
@@ -47,6 +48,7 @@ class MongoDataBase {
     var result = await _collection.insert(users);
     return result != null;
   }
+
   Future<bool> addToDB(Map<String, dynamic> data, String collection) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
@@ -68,6 +70,17 @@ class MongoDataBase {
     }
     return last;
   }
+
+  Future<List<String>?> getDateTime(DateTime dateEvent) async {
+    _collection = _db.collection('lessons');
+    final result = await _collection.findOne(where.eq('datetime', DateFormat('yyyy-MM-dd').format(dateEvent)));
+    if (result != null) {
+      return result['datetime'];
+    } else {
+      return null;
+    }
+  }
+
 
   Future<List<Map<String, dynamic>>> getHorsesWithDP() async {
     if (_db == null ) {
