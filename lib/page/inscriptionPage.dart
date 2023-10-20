@@ -86,9 +86,6 @@ class _CreateAccount extends State<NewAccount> {
                   } else if (!emailRegex.hasMatch(value)) {
                     return 'Entrez une adresse e-mail valide';
                   }
-                    else if (value == MongoDataBase().getEmail()){
-                    return 'Cette adresse mail existe déjà';
-                  }
 
 
                   return null;

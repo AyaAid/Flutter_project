@@ -52,14 +52,39 @@ class _MonProfilePageState extends State<MonProfilePage> {
       body: Center(
         child: user != null
             ? Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text('Nom d\'utilisateur: ${user!.username}'),
-            Text('Nom complet: ${user!.fullName}'),
-            Text('Email: ${user!.email}'),
-            Text('Téléphone: ${user!.phoneNumber}'),
-            Text('Licence FFE: ${user!.link}'),
-            Text('Date de Naissance: ${user!.dateOfBirth.toLocal()}'),
+            SizedBox(height: 30),
+            Text(
+                'Nom d\'utilisateur: ${user!.username}',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 30),
+            Text(
+                'Nom complet: ${user!.fullName}',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 30),
+            Text(
+                'Email: ${user!.email}',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 30),
+            Text(
+                'Téléphone: ${user!.phoneNumber}',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 30),
+            Text(
+                'Licence FFE: ${user!.link}',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 30),
+            Text(
+                'Date de Naissance: ${user!.dateOfBirth.toLocal()}',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -119,13 +144,51 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 },
               ),
               TextFormField(
+                initialValue: _editedUser.phoneNumber,
+                decoration: InputDecoration(labelText: 'Téléphone'),
+                onSaved: (value) {
+                  _editedUser.phoneNumber = value!;
+                },
+              ),
+              TextFormField(
+                initialValue: _editedUser.link,
+                decoration: InputDecoration(labelText: 'Licence FFE'),
+                onSaved: (value) {
+                  _editedUser.link = value!;
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Date de naissance'),
+                onSaved: (value) {
+                  if (value != null && value.isNotEmpty) {
+                    try {
+                      _editedUser.dateOfBirth = DateTime.parse(value);
+                    } catch (d) {
+                      print("Erreur de conversion de date de naissance : $d");
+                    }
+                  }
+                },
+              ),
+
+              TextFormField(
                 initialValue: _editedUser.email,
                 decoration: InputDecoration(labelText: 'Email'),
+                validator: (value) {
+                  final emailRegex = RegExp(r"^[a-z0-9.a-z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+
+                  if (value == null || value.isEmpty) {
+                    return 'Entrez votre email';
+                  } else if (!emailRegex.hasMatch(value)) {
+                    return 'Entrez une adresse e-mail valide';
+                  }
+
+
+                  return null;
+                },
                 onSaved: (value) {
                   _editedUser.email = value!;
                 },
               ),
-              // Ajoutez d'autres champs ici
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
