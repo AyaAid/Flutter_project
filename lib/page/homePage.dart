@@ -1,8 +1,10 @@
 import 'dart:typed_data';
 import 'package:andrestable/form/contest.dart';
+import 'package:andrestable/page/planningPage.dart';
 import 'package:andrestable/form/horseFormPage.dart';
 import 'package:andrestable/form/profileFormPage.dart';
 import 'package:andrestable/form/soireeCreatePage.dart';
+import 'package:andrestable/page/soireePage.dart';
 import 'package:andrestable/form/lessonsFormPage.dart';
 import 'package:andrestable/page/participations.dart';
 import 'package:flutter/material.dart';
@@ -265,6 +267,38 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
+
+
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PlanningPage()),);
+                },
+                child: const Text('Vérifier votre emploi du temps'),
+              ),
+
+
+              const SizedBox(height: 20.0),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _lastHorses.length,
+                  itemBuilder: (context, index) {
+                    final horse = _lastHorses[index];
+
+                    Uint8List imageBytes = Uint8List.fromList(List<int>.from(horse['image']));
+
+
+                    return ListTile(
+                      title: Text('Nom du cheval: ${horse['name']}'),
+                      subtitle: Text('Nom du créateur: ${horse['user']}'),
+                      leading: imageBytes != null
+                          ? Image.memory(imageBytes)
+                          : Icon(Icons.image),
+                    );
+                  },
+                )
 
               _buildCategoryCard(
                 categoryTitle: 'Compétitions',
