@@ -1,8 +1,8 @@
-import 'package:andrestable/page/loginPage.dart';
+import 'package:andrestable/form/loginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:andrestable/database/mongodb.dart';
 
-import 'homePage.dart';
+import '../page/homePage.dart';
 
 class LessonsFormModel {
   String? place;
