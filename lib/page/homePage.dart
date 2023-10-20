@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:andrestable/form/contest.dart';
 import 'package:andrestable/form/horseFormPage.dart';
+import 'package:andrestable/form/loginPage.dart';
 import 'package:andrestable/form/profileFormPage.dart';
 import 'package:andrestable/form/soireeCreatePage.dart';
 import 'package:andrestable/form/lessonsFormPage.dart';
@@ -174,6 +175,18 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
+            ListTile(
+              leading: const Icon(Icons.person, color: Colors.pinkAccent),
+              title: const Text('Déconnexion'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginPage(),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -193,9 +206,13 @@ class _HomePageState extends State<HomePage> {
                     leading: imageBytes != null
                         ? Image.memory(imageBytes)
                         : const Icon(Icons.add_a_photo),
+                    onTap: () {
+                      _showHorseInfoPopup(horse);
+                    },
                   );
                 },
               ),
+
               _buildCategoryCard(
                 categoryTitle: 'Soirées',
                 itemList: _parties,
@@ -217,6 +234,8 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.grey,
                       ),
                       onTap: () {
+                        _showPartyInfoPopup(party);
+
                         setState(() {
                           userParticipation[eventId] = !isParticipating;
                           if (isParticipating) {
@@ -252,6 +271,8 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.grey,
                       ),
                       onTap: () {
+                        _showLessonInfoPopup(lessons);
+
                         setState(() {
                           userParticipation[eventId] = !isParticipating;
                           if (isParticipating) {
@@ -287,6 +308,8 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.grey,
                       ),
                       onTap: () {
+                        _showContestInfoPopup(contest);
+
                         setState(() {
                           userParticipation[eventId] = !isParticipating;
                           if (isParticipating) {
@@ -335,6 +358,158 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+    );
+  }
+  void _showHorseInfoPopup(Map<String, dynamic> horse) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Informations sur la licorne : ${horse['name']}',
+            style: const TextStyle(
+              color: Colors.pink,
+            ),
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Nom de la licorne : ${horse['name']}'),
+              Text('Nom du créateur : ${horse['user']}'),
+              Text('Date d\'anniverssaire : ${horse['birthdate']}'),
+              Text('Race : ${horse['race']}'),
+              Text('Genre : ${horse['gender']}'),
+              Text('Demi-Pension : ${horse['isDP']}'),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fermer',
+                style: TextStyle(
+                  color: Colors.pinkAccent,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showPartyInfoPopup(Map<String, dynamic> party) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Informations sur la soirée',
+            style: TextStyle(
+              color: Colors.pink,
+            ),
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Thème : ${party['theme']}'),
+              Text('Date et Heure : ${party['datetime']}'),
+              Text('Adresse : ${party['adresse']}'),
+              Text('Type de soirée : ${party['typesoiree']}'),
+              Text('Demande de : ${party['user']}'),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fermer',
+                style: TextStyle(
+                  color: Colors.pinkAccent,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showLessonInfoPopup(Map<String, dynamic> lessons) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Informations sur la leçon',
+            style: TextStyle(
+              color: Colors.pink,
+            ),
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Lieu : ${lessons['place']}'),
+              Text('Date et Heure : ${lessons['datetime']}'),
+              Text('Durée : ${lessons['duration']}'),
+              Text('Discipline : ${lessons['discipline']}'),
+              Text('Demande de : ${lessons['user']}'),
+              Text('Participants : ${lessons['participants']}'),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fermer',
+                style: TextStyle(
+                  color: Colors.pinkAccent,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showContestInfoPopup(Map<String, dynamic> contest) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Informations sur la compétition',
+            style: TextStyle(
+              color: Colors.pink,
+            ),
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Nom : ${contest['name']}'),
+              Text('Adresse : ${contest['adress']}'),
+              Text('Date et Heure : ${contest['datetime']}'),
+              Text('Demande de : ${contest['user']}'),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fermer',
+                style: TextStyle(
+                  color: Colors.pinkAccent,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
