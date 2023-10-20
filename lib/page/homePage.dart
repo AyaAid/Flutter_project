@@ -1,9 +1,10 @@
 import 'dart:typed_data';
-import 'package:andrestable/page/contest.dart';
-import 'package:andrestable/page/horseFormPage.dart';
-import 'package:andrestable/page/profileFormPage.dart';
-import 'package:andrestable/page/soireeCreatePage.dart';
-import 'package:andrestable/page/lessonsFormPage.dart';
+import 'package:andrestable/form/contest.dart';
+import 'package:andrestable/form/horseFormPage.dart';
+import 'package:andrestable/form/profileFormPage.dart';
+import 'package:andrestable/form/soireeCreatePage.dart';
+import 'package:andrestable/form/lessonsFormPage.dart';
+import 'package:andrestable/page/participations.dart';
 import 'package:flutter/material.dart';
 import '../database/mongodb.dart';
 import 'adminPage.dart';
@@ -95,6 +96,18 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MonProfilePage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.accessibility, color: Colors.pinkAccent),
+              title: const Text('Mes participations'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserEventsPage(),
                   ),
                 );
               },
