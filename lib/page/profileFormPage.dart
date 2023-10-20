@@ -115,12 +115,19 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _birthdateController = TextEditingController();
   late UserProfile _editedUser;
 
   @override
   void initState() {
     super.initState();
     _editedUser = widget.user;
+  }
+
+  @override
+  void dispose() {
+    _birthdateController.dispose();
+    super.dispose();
   }
 
   @override
@@ -158,16 +165,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Date de naissance'),
-                onSaved: (value) {
-                  if (value != null && value.isNotEmpty) {
-                    try {
-                      _editedUser.dateOfBirth = DateTime.parse(value);
-                    } catch (d) {
-                      print("Erreur de conversion de date de naissance : $d");
-                    }
+                controller: _birthdateController,
+                decoration: const InputDecoration(labelText: 'Date de naissance'),
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: _editedUser.dateOfBirth ?? DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                  );
+
+                  if (pickedDate != null && pickedDate != _editedUser.dateOfBirth) {
+                    setState(() {
+                      _editedUser.dateOfBirth = pickedDate;
+                      _birthdateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                    });
                   }
                 },
+                readOnly: true,
               ),
 
               TextFormField(
