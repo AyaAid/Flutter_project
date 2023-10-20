@@ -181,7 +181,7 @@ class _AdminPageState extends State<AdminPage> {
     return ListTile(
       title: Text('Licorne: $horseName'),
       subtitle: Text(
-        'Robe: ${horse['horse_dess']}',
+        'Robe: ${horse['horse_dress']}',
       ),
     );
   }
