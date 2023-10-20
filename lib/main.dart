@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'database/mongodb.dart';
-import 'package:andrestable/page//loginPage.dart';
+import 'package:andrestable/form/loginPage.dart';
 import 'package:andrestable/page/profilePage.dart';
 
 void main() async {
@@ -24,4 +24,5 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
     );
   }
+  
 }

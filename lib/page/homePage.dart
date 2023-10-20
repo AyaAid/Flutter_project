@@ -1,12 +1,13 @@
 import 'dart:typed_data';
-import 'package:andrestable/page/contest.dart';
-import 'package:andrestable/page/horseFormPage.dart';
-import 'package:andrestable/page/profileFormPage.dart';
-import 'package:andrestable/page/profilePage.dart';
-import 'package:andrestable/page/soireeCreatePage.dart';
-import 'package:andrestable/page/lessonsFormPage.dart';
+import 'package:andrestable/form/contest.dart';
+import 'package:andrestable/form/horseFormPage.dart';
+import 'package:andrestable/form/profileFormPage.dart';
+import 'package:andrestable/form/soireeCreatePage.dart';
+import 'package:andrestable/form/lessonsFormPage.dart';
+import 'package:andrestable/page/participations.dart';
 import 'package:flutter/material.dart';
 import '../database/mongodb.dart';
+import 'adminPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -100,6 +101,18 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.accessibility, color: Colors.pinkAccent),
+              title: const Text('Mes participations'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserEventsPage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.add_circle, color: Colors.pinkAccent),
               title: const Text('Ajouter un compagnon'),
               onTap: () {
@@ -147,6 +160,20 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
+            if(loggedInUsername == 'admin')
+              ListTile(
+                leading: const Icon(Icons.star, color: Colors.pinkAccent),
+                title: const Text('Accès Admin'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AdminPage()
+                      ,
+                    ),
+                  );
+                },
+              ),
           ],
         ),
       ),
@@ -161,12 +188,12 @@ class _HomePageState extends State<HomePage> {
                   final horse = item as Map<String, dynamic>;
                   Uint8List imageBytes = Uint8List.fromList(List<int>.from(horse['image']));
                   return ListTile(
-                      title: Text('Nom de la licorne: ${horse['name']}'),
-                  subtitle: Text('Nom du créateur: ${horse['user']}'),
+                    title: Text('Nom de la licorne: ${horse['name']}'),
+                    subtitle: Text('Nom du créateur: ${horse['user']}'),
                     leading: imageBytes != null
                         ? Image.memory(imageBytes)
                         : const Icon(Icons.add_a_photo),
-                   );
+                  );
                 },
               ),
               _buildCategoryCard(
@@ -178,8 +205,8 @@ class _HomePageState extends State<HomePage> {
                   final eventData = eventDataMap[eventId];
                   final isParticipating = eventData?.isUserParticipating ?? false;
                   return ListTile(
-                    title: Text('${party['theme']}'),
-                    subtitle: Text('${party['datetime']} || ${party['adresse']} || ${party['typesoiree']}'),
+                      title: Text('${party['theme']}'),
+                      subtitle: Text('${party['datetime']} || ${party['adresse']} || ${party['typesoiree']}'),
                       leading: isParticipating
                           ? const Icon(
                         Icons.check_box,
@@ -213,8 +240,8 @@ class _HomePageState extends State<HomePage> {
                   final eventData = eventDataMap[eventId];
                   final isParticipating = eventData?.isUserParticipating ?? false;
                   return ListTile(
-                    title: Text('Leçon de ${lessons['discipline']}'),
-                    subtitle: Text('${lessons['dateTime']} || ${lessons['place']} || ${lessons['duration']}'),
+                      title: Text('Leçon de ${lessons['discipline']}'),
+                      subtitle: Text('${lessons['dateTime']} || ${lessons['place']} || ${lessons['duration']}'),
                       leading: isParticipating
                           ? const Icon(
                         Icons.check_box,
@@ -248,8 +275,8 @@ class _HomePageState extends State<HomePage> {
                   final isParticipating = userParticipation[eventId] ?? false;
                   Uint8List imageBytes = Uint8List.fromList(List<int>.from(contest['image']));
                   return ListTile(
-                    title: Text('Compétition : ${contest['name']}'),
-                    subtitle: Text('${contest['datetime']} || ${contest['adress']}'),
+                      title: Text('Compétition : ${contest['name']}'),
+                      subtitle: Text('${contest['datetime']} || ${contest['adress']}'),
                       leading: isParticipating
                           ? const Icon(
                         Icons.check_box,

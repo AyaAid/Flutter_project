@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'dart:typed_data';
-import '../page/profileFormPage.dart';
+import '../form/profileFormPage.dart';
 import 'constant.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
@@ -10,8 +10,8 @@ class MongoDataBase {
 
 
   static connect() async{
-      _db = await Db.create(MONGO_URL);
-      await _db.open();
+    _db = await Db.create(MONGO_URL);
+    await _db.open();
 
 
   }
@@ -69,6 +69,19 @@ class MongoDataBase {
     return last;
   }
 
+  Future<List<Map<String, dynamic>>> getHorsesWithDP() async {
+    if (_db == null ) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection("horses");
+    var result = await _collection.find(where.eq('isDP', 1));
+    List<Map<String, dynamic>> last = [];
+    await for (var data in result) {
+      last.add(Map<String, dynamic>.from(data));
+    }
+    return last;
+  }
+
   Future<List<Map<String, dynamic>>> get(String collection) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
@@ -77,6 +90,66 @@ class MongoDataBase {
     var result = await _collection.find(where.eq('isVerify', 1)).toList();
     return result;
   }
+
+  Future<List<Map<String, dynamic>>> getAdmin(String collection) async {
+    if (_db == null ) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection(collection);
+    var result = await _collection.find(where.eq('isVerify', 0)).toList();
+    return result;
+  }
+
+  Future<void> addEvent(String eventId, String collection) async {
+    final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
+    if (idMatch != null) {
+      final extractedId = idMatch.group(1);
+      final id = ObjectId.parse(extractedId!);
+
+      final _collection = _db.collection(collection);
+      final result = await _collection.update(
+        where.eq('_id', id),
+        modify.set('isVerify', 1),
+      );
+
+    } else {
+      print('Format d\'ID invalide : $eventId');
+    }
+  }
+
+
+  Future<void> removeEvent(String eventId, String collection) async {
+    final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
+    if (idMatch != null) {
+      final extractedId = idMatch.group(1);
+      final id = ObjectId.parse(extractedId!);
+
+      final _collection = _db.collection(collection);
+      final result = await _collection.remove(
+        where.eq('_id', id),
+      );
+
+    } else {
+      print('Format d\'ID invalide : $eventId');
+    }
+  }
+
+  Future<bool> isVerifyEvent(String eventId, String collection) async {
+    final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
+    if (idMatch != null) {
+      final extractedId = idMatch.group(1);
+      final id = ObjectId.parse(extractedId!);
+
+      final _collection = _db.collection(collection);
+      final result = await _collection.findOne(where.eq('_id', id).eq('isVerify', 0));
+
+      return result != null;
+    } else {
+      print('Format d\'ID invalide : $eventId');
+      return false;
+    }
+  }
+
 
   Future<bool> verifyPw(String username, String email, String collection) async {
     if (_db == null ) {
@@ -90,6 +163,7 @@ class MongoDataBase {
     });
     return result != null;
   }
+
   Future<bool> changePw(String username, String email, String password, String collection) async {
     if (_db == null ) {
       throw Exception('La connexion à la base de données n\'a pas été établie.');
@@ -102,6 +176,7 @@ class MongoDataBase {
 
     return result != null;
   }
+
 
   Future<List<Map<String, dynamic>>> getEmail() async {
     if (_db == null ) {
@@ -219,6 +294,16 @@ class MongoDataBase {
 
     return result != null;
   }
+
+  Future<List<Map<String, dynamic>>> getEventsForUser(String username, String collection) async {
+    if (_db == null) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection(collection);
+    var result = await _collection.find(where.eq('participants', username)).toList();
+    return result;
+  }
+
 }
 
 

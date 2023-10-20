@@ -1,7 +1,7 @@
 
-import 'package:andrestable/page/forgotPwPage.dart';
+import 'package:andrestable/form/forgotPwPage.dart';
 import 'package:andrestable/page/homePage.dart';
-import 'package:andrestable/page/inscriptionPage.dart';
+import 'package:andrestable/form/inscriptionPage.dart';
 import 'package:flutter/material.dart';
 import 'package:andrestable/database/mongodb.dart';
 
