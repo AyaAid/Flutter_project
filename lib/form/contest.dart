@@ -1,12 +1,12 @@
 
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:andrestable/page/loginPage.dart';
+import 'package:andrestable/form/loginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:andrestable/database/mongodb.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'homePage.dart';
+import '../page/homePage.dart';
 
 class ContestFormModel {
   String? name;
@@ -96,7 +96,7 @@ class _ContestPageState extends State<ContestFormPage> {
                     return null;
                   },
                   onSaved: (value) {
-                    _contestForm.name = value!;
+                    _contestForm.adress = value!;
                   },
                 ),
 
