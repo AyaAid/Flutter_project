@@ -5,6 +5,7 @@ import 'package:andrestable/form/profileFormPage.dart';
 import 'package:andrestable/form/soireeCreatePage.dart';
 import 'package:andrestable/form/lessonsFormPage.dart';
 import 'package:andrestable/page/participations.dart';
+import 'package:andrestable/page/planningPage.dart';
 import 'package:flutter/material.dart';
 import '../database/mongodb.dart';
 import 'adminPage.dart';
@@ -90,7 +91,7 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               leading: const Icon(Icons.person, color: Colors.pinkAccent),
-              title: const Text('Mon profile'),
+              title: const Text('Mon profil'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -108,6 +109,18 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => UserEventsPage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.calendar_month, color: Colors.pinkAccent),
+              title: const Text('Mon planning'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PlanningPage(),
                   ),
                 );
               },

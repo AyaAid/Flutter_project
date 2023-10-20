@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:andrestable/database/mongodb.dart';
 
 class Event {
   final DateTime date;
@@ -9,6 +8,8 @@ class Event {
 }
 
 class PlanningPage extends StatefulWidget {
+  const PlanningPage({super.key});
+
   @override
   _PlanningPageState createState() => _PlanningPageState();
 }
@@ -21,9 +22,6 @@ class _PlanningPageState extends State<PlanningPage> {
   List<Event> events = [
     Event(DateTime(2023, 10, 25), 'Événement 1'),
     Event(DateTime(2023, 10, 28), 'Événement 2'),
-  ];
-
-  List<Event> _events = [
   ];
 
   @override
@@ -69,7 +67,7 @@ class _PlanningPageState extends State<PlanningPage> {
                     title: Text(events[index].name),
                   );
                 } else {
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 }
               },
             ),
