@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:convert';
 import 'dart:typed_data';
 import '../form/profileFormPage.dart';
+import '../form/editFormHorsePage.dart';
 import 'constant.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
@@ -262,6 +263,60 @@ class MongoDataBase {
       return null;
     }
 
+  }
+  Future<HorseProfile?> getHorseProfile(String name) async {
+    if (_db == null) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection('horses');
+    var result = await _collection.findOne({'name': name});
+
+    if (result != null) {
+      Uint8List? imageBytes;
+      final imageData = result['image'];
+
+      if (imageData is String) {
+        if (imageData.isNotEmpty) {
+          imageBytes = Uint8List.fromList(base64Decode(imageData));
+        }
+      } else if (imageData is List<int>) {
+        imageBytes = Uint8List.fromList(imageData);
+      }
+
+      return HorseProfile(
+        name: result['name'],
+        dateOfBirth: result['dateOfBirth'] != null
+            ? DateTime.parse(result['dateOfBirth'])
+            : DateTime.now(),
+        horse_dress: result['horse_dress'] ?? '',
+        race: result['race'] ?? '',
+        gender: result['gender'] ?? '',
+        speciality: result['speciality'] ?? '',
+        image: imageBytes,
+      );
+    } else {
+      return null;
+    }
+
+  }
+
+  Future<bool> updateHorseProfile(HorseProfile horse) async {
+    if (_db == null) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection('horses');
+    var result = await _collection.update(
+        where.eq('name', horse.name),
+        modify
+            .set('dateOfBirth', horse.dateOfBirth.toUtc().toIso8601String())
+            .set('horse_dress', horse.horse_dress)
+            .set('race', horse.race)
+            .set('gender', horse.gender)
+            .set('speciality', horse.speciality)
+            .set('image', horse.image)
+    );
+
+    return result != null;
   }
 
   Future<bool> updateUserProfile(UserProfile user) async {

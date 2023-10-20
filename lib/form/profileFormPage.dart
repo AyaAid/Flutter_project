@@ -4,6 +4,7 @@ import '../database/mongodb.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:andrestable/page/homePage.dart';
+import '../form/editFormHorsePage.dart';
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 
@@ -35,7 +36,7 @@ class MonProfilePage extends StatefulWidget {
 
 class _MonProfilePageState extends State<MonProfilePage> {
   UserProfile? user;
-
+  HorseProfile? horse;
   @override
   void initState() {
     super.initState();
@@ -102,6 +103,17 @@ class _MonProfilePageState extends State<MonProfilePage> {
                 );
               },
               child: Text('Éditer le Profil'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditHorseProfilePage(horse: horse!),
+                  ),
+                );
+              },
+              child: Text('Éditer le Profil de mon cheval'),
             ),
           ],
         )
