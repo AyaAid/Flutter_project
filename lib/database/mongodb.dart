@@ -303,6 +303,22 @@ class MongoDataBase {
     return result;
   }
 
+  Future<void> addComment(String eventId, String username, String comment, String collection) async {
+    final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);
+    if (idMatch != null) {
+      final extractedId = idMatch.group(1);
+      final id = ObjectId.parse(extractedId!);
+
+      final _collection = _db.collection(collection);
+      final result = await _collection.update(
+        where.eq('_id', id),
+        modify.push('comments', {'username': username, 'comment': comment}),
+      );
+    } else {
+      print('Format d\'ID invalide : $eventId');
+    }
+  }
+
 }
 
 
