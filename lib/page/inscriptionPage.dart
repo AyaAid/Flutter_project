@@ -102,7 +102,7 @@ class _CreateAccount extends State<NewAccount> {
                   labelText: 'Mot de passe',
                 ),
                 validator: (value) {
-                  final passwordRegex = RegExp(r"^[A-Z0-9]+[a-z0-9]+[!#$%&'*+-/=?^_`{|}~]+[0-9]");
+                  final passwordRegex = RegExp(r"^(?=.*[A-Z])(?=.*[a-z])(?=.*[!#$%&'*+-/=?^_`{|}~])(?=.*\d).{8,}$");
 
                   if (value == null || value.isEmpty) {
                     return 'Entrez votre mot de passe';
