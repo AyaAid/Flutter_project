@@ -7,6 +7,9 @@ import 'package:mongo_dart/mongo_dart.dart';
 class MongoDataBase {
   static late Db _db;
   static late DbCollection _collection;
+  static late DbCollection _collectionHorses;
+  static late DbCollection _collectionPartys;
+  static late DbCollection _collectionContests;
 
 
   static connect() async{
@@ -133,6 +136,34 @@ class MongoDataBase {
       print('Format d\'ID invalide : $eventId');
     }
   }
+
+  Future<void> removeHorse(ObjectId horseId) async {
+
+
+      final _collection = _db.collection('horses');
+      final result = await _collection.remove(
+        where.eq('_id', horseId));
+
+  }
+
+  Future<void> removeUser(String user) async {
+    if (_db == null ) {
+      throw Exception('La connexion à la base de données n\'a pas été établie.');
+    }
+    _collection = _db.collection('users');
+    _collectionHorses = _db.collection('horsers');
+    _collectionPartys = _db.collection('partys');
+    _collectionContests = _db.collection('contests');
+
+
+     await _collection.remove(where.eq('username', user));
+    await _collectionHorses.remove(where.eq('user', user));
+    await _collectionPartys.remove(where.eq('user', user));
+    await _collectionContests.remove(where.eq('user', user));
+
+  }
+
+
 
   Future<bool> isVerifyEvent(String eventId, String collection) async {
     final idMatch = RegExp(r'ObjectId\("(\w+)"\)').firstMatch(eventId);

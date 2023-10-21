@@ -307,10 +307,9 @@ class _HomePageState extends State<HomePage> {
                   final contest = item as Map<String, dynamic>;
                   final eventId = contest['_id'].toString();
                   final isParticipating = userParticipation[eventId] ?? false;
-                  Uint8List imageBytes = Uint8List.fromList(List<int>.from(contest['image']));
                   return ListTile(
                       title: Text('Compétition : ${contest['name']}'),
-                      subtitle: Text('${contest['datetime']} || ${contest['adress']}'),
+                      subtitle: Text('${contest['datetime']} || ${contest['adress']} || ${contest['level']}'),
                       leading: isParticipating
                           ? const Icon(
                         Icons.check_box,

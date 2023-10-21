@@ -13,8 +13,10 @@ class ContestFormModel {
   String? adress;
   Uint8List? image;
   DateTime? datetime;
+  String? level;
   bool? isVerify;
   String? user;
+  List<String>? participants;
 }
 
 class ContestFormPage extends StatefulWidget {
@@ -120,6 +122,21 @@ class _ContestPageState extends State<ContestFormPage> {
                   },
                   readOnly: true,
                 ),
+                DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(labelText: 'Spécialité de la licorne'),
+                  value: _contestForm.level,
+                  items: ['Amateur', 'C1', 'C2', 'C3', 'C4'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _contestForm.level = newValue;
+                    });
+                  },
+                ),
 
                 const SizedBox(height: 20.0),
                 ElevatedButton(
@@ -142,9 +159,11 @@ class _ContestPageState extends State<ContestFormPage> {
                         'name': _contestForm.name,
                         'adress': _contestForm.adress,
                         'datetime': _contestForm.datetime,
+                        'level': _contestForm.level,
                         'image': _contestForm.image != null ? Uint8List.fromList(_contestForm.image as List<int>) : null,
                         'isVerify': isVerified,
                         'user': loggedInUsername,
+                        'participants': _contestForm.participants ?? []..add(loggedInUsername!),
                       };
                       bool isValid = await MongoDataBase().addToDB(contest, "contests");
                       if (isValid) {

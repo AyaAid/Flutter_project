@@ -171,17 +171,41 @@ class _AdminPageState extends State<AdminPage> {
       subtitle: Text(
         'Email: ${user['email']}',
       ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.red),
+            onPressed: () {
+              MongoDataBase().removeUser(username);
+            },
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildHorseItem(dynamic item) {
     final horse = item as Map<String, dynamic>;
     final horseName = horse['name'];
+    final horseID = horse['_id'];
 
     return ListTile(
       title: Text('Licorne: $horseName'),
       subtitle: Text(
         'Robe: ${horse['horse_dress']}',
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.red),
+            onPressed: () {
+              print(horseID.runtimeType);
+              MongoDataBase().removeHorse(horseID);
+            },
+          ),
+        ],
       ),
     );
   }
